@@ -31,8 +31,8 @@
                     <div class="mb-5">
                         <div class="quesion-header">３．プラスボタン、マイナスボタンで数値を変更できるようにしてください。</div>
                         <label>カウンター</label>
-                        <button style="width:2rem;">+</button>
-                        <button style="width:2rem;">-</button>
+                        <button style="width:2rem;" v-on:click="count ++">+</button>
+                        <button style="width:2rem;" v-on:click="count --">-</button>
                         {{count}}
                     </div>
                 </div>
@@ -63,10 +63,16 @@ export default {
     },
     computed: {
         total() {
-
+            return this.left + this.right
         },
         age() {
-
+            if (this.birthday) {
+                var today = new Date();
+                var birthday = new Date(this.birthday);
+                var date = ( today.getFullYear() * 10000 ) + (( today.getMonth() + 1 ) * 100 ) + today.getDate() ;
+                var birthdayDate = ( birthday.getFullYear() * 10000 ) + (( birthday.getMonth() + 1 ) * 100 ) + birthday.getDate() ;
+                return( Math.floor(( date - birthdayDate ) / 10000 )) ;
+            }
         }
     },
     methods: {
