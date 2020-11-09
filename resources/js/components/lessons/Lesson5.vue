@@ -82,7 +82,7 @@ export default {
     },
     computed: {
         filterInventories() {
-            return this.inventories
+            return this.inventories.filter(inventorie => inventorie.stock_num >= this.searchItemCode)
         }
     },
     methods: {

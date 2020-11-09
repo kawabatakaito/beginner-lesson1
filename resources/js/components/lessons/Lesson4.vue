@@ -48,6 +48,28 @@
                             </tr>
                         </tbody>
                     </table>
+
+                    <table class="table table-sm" key="processes">
+                        <thead>
+                            <tr>
+                                <th class="text-center bg-primary text-white">id</th>
+                                <th class="text-center bg-primary text-white">商品コード</th>
+                                <th class="text-center bg-primary text-white">商品名</th>
+                                <th class="text-center bg-primary text-white" style="width:7rem;">在庫数</th>
+                                <th class="text-center bg-primary text-white" style="width:7rem;">実在庫数</th>
+                            </tr>
+                        </thead>
+
+                        <tbody  v-for="(inventorie, index) in inventories" :key="index">
+                            <tr class="bg-white">
+                                <td class="text-center align-middle">{{ inventorie.id }}</td>
+                                <td class="text-center align-middle">{{ inventorie.item_code }}</td>
+                                <td class="text-center align-middle">{{ inventorie.item_name }}</td>
+                                <td class="text-center align-middle">{{ inventorie.stock_num }}</td>
+                                <td class="text-center align-middle">{{ inventorie.real_stock_num }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -83,7 +105,7 @@ export default {
         onBack() {
             this.$router.push({ name: 'home' })
         }
-    },
+    }
 }
 </script>
 

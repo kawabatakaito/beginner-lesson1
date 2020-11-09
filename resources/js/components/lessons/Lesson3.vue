@@ -14,49 +14,33 @@
                     </div>
                     
                     <div class="quesion-header">電卓を作成してください。</div>
+                    <p><input type="text" v-model="display"></p>
                     <p>
-                        <button style="width:2rem;" v-on:click="count += '7'">7</button>
-                        <button style="width:2rem;" v-on:click="count += '8'">8</button>
-                        <button style="width:2rem;" v-on:click="count += '9'">9</button>
+                        <button style="width:2rem;" @click="display += '7'">7</button>
+                        <button style="width:2rem;" @click="display += '8'">8</button>
+                        <button style="width:2rem;" @click="display += '9'">9</button>
+                        <button style="width:2rem;" @click="dividedPush">/</button>
+                        <button style="width:2rem;" @click="clearPush">C</button>
                     </p>
                     <p>
-                        <button style="width:2rem;" v-on:click="count += '4'">4</button>
-                        <button style="width:2rem;" v-on:click="count += '5'">5</button>
-                        <button style="width:2rem;" v-on:click="count += '6'">6</button>
+                        <button style="width:2rem;" @click="display += '4'">4</button>
+                        <button style="width:2rem;" @click="display += '5'">5</button>
+                        <button style="width:2rem;" @click="display += '6'">6</button>
+                        <button style="width:2rem;" @click="multipliedPush">*</button>
                     </p>
                     <p>
-                        <button style="width:2rem;" v-on:click="count += '1'">1</button>
-                        <button style="width:2rem;" v-on:click="count += '2'">2</button>
-                        <button style="width:2rem;" v-on:click="count += '3'">3</button>
-                    </p>
-                    <p><button style="width:2rem;" v-on:click="count += '0'">0</button></p>
-                        <input type="number" v-model.number="count">
-
-                    <p>
-                        <button style="width:2rem;" v-on:click="count2 += '7'">7</button>
-                        <button style="width:2rem;" v-on:click="count2 += '8'">8</button>
-                        <button style="width:2rem;" v-on:click="count2 += '9'">9</button>
+                        <button style="width:2rem;" @click="display += '1'">1</button>
+                        <button style="width:2rem;" @click="display += '2'">2</button>
+                        <button style="width:2rem;" @click="display += '3'">3</button>
+                        <button style="width:2rem;" @click="minusPush">-</button>
                     </p>
                     <p>
-                        <button style="width:2rem;" v-on:click="count2 += '4'">4</button>
-                        <button style="width:2rem;" v-on:click="count2 += '5'">5</button>
-                        <button style="width:2rem;" v-on:click="count2 += '6'">6</button>
+                        <button style="width:2rem;" @click="display += '0'">0</button>
+                        <button style="width:2rem;" @click="display += '.'">.</button>
+                        <button style="width:2rem;" @click="plusPush">+</button>
+                        <button style="width:2rem;" @click="equalPush">=</button>
                     </p>
-                    <p>
-                        <button style="width:2rem;" v-on:click="count2 += '1'">1</button>
-                        <button style="width:2rem;" v-on:click="count2 += '2'">2</button>
-                        <button style="width:2rem;" v-on:click="count2 += '3'">3</button>
-                    </p>
-                    <p><button style="width:2rem;" v-on:click="count2 += '0'">0</button></p>
-                        <input type="number" v-model.number="count2">
-                    <p>
-                        <button style="width:2rem;" v-on:click="col = '+' ">+</button>
-                        <button style="width:2rem;" v-on:click="col = '-' ">-</button>
-                        <button style="width:2rem;" v-on:click="col = '*' ">*</button>
-                        <button style="width:2rem;" v-on:click="col = '/' ">/</button>
-                    </p>
-                    
-                        <p>{{ result }}</p>
+                    <p>計算式　<input type="text" v-model="memoly"></p>
                 </div>
             </div>
         </div>
@@ -71,9 +55,8 @@ export default {
     },
     data () {
         return {
-            count: '',
-            count2: '',
-            col: '',
+            display: '',
+            memoly: '',
         }
     },
     mounted () {
@@ -83,21 +66,41 @@ export default {
         //
     },
     computed: {
-        result() {
-            if (this.col == '+') {
-                return Number(this.count) + Number(this.count2)
-            } else if (this.col == '-' ){
-                return Number(this.count) - Number(this.count2)
-            } else if (this.col == '*' ){
-                return Number(this.count) * Number(this.count2)
-            } else if (this.col == '/' ){
-                return Number(this.count) / Number(this.count2)
-            }
+        memoly() {
+            return this.memoly
+        },
+        display() {
+            return this.display
         }
     },
     methods: {
         onBack() {
             this.$router.push({ name: 'home' })
+        },
+        plusPush() {
+           this.memoly += this.display + '+'
+           return this.display = ''
+        },
+        minusPush() {
+           this.memoly += this.display + '-'
+           return this.display = ''
+        },
+        multipliedPush() {
+           this.memoly += this.display + '*'
+           return this.display = ''
+        },
+        dividedPush() {
+           this.memoly += this.display + '/'
+           return this.display = ''
+        },
+        equalPush() {
+           this.memoly  += this.display
+           this.display = Function('return ('+this.memoly+');')();
+           return this.memoly  = ''
+        },
+        clearPush() {
+           this.memoly  = ''
+           return this.display = ''
         }
     },
 }
