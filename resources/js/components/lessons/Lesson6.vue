@@ -34,6 +34,19 @@
                             <input type="text" v-model="result.email">
                         </p>
                     </div>
+                    <h2>Covid　都道府県別累計感染者数</h2>
+
+                    <div v-for="data in datas" :key="data.index">
+                        <p>更新日：
+                            <input type="text" v-model="data.lastUpdate">
+                        </p>
+                        <div v-for="area in data.area" :key="area.index">
+                            <p>都道府県：
+                                <input type="text" v-model="area.name_jp">
+                                累計感染者数：<input type="text" v-model="area.npatients">
+                            </p>
+                        </div>
+                    </div>
                     <hr>
                     <div class="alert alert-warning" role="alert">
                         <i class="fas fa-book-reader"></i> 応用編：公開されているAPIを使ってデータを取得してましょう。「http://smsurf.app-rox.com/api/」
@@ -53,10 +66,12 @@ export default {
     data () {
         return {
             items: null,
+            datas: null,
         }
     },
     mounted () {
-        this.getInit()
+        this.getInit();
+        this.getData();
     },
     watch: {
         //
@@ -74,11 +89,19 @@ export default {
             // https://qiita.com/nonkapibara/items/8b587013b6b817d6dfc4
             this.items = data
         },
+        async getData() {
+            // const {covid} = await axios.get('https://data.corona.go.jp/converted-json/covid19japan-all.json')
+            // this.datas = covid
+            axios.get('https://data.corona.go.jp/converted-json/covid19japan-all.json')
+            .then(response => {
+                this.datas= response.data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
         onBack() {
             this.$router.push({ name: 'home' })
-        },
-       async  getAnser() {
-
         }
     },
 }
