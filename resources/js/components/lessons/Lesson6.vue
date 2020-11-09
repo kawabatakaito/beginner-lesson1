@@ -16,13 +16,24 @@
                     <div class="quesion-header">APIを使って取得したデータを表示しましょう</div>
                     <div class="d-flex flex-wrap justify-content-start mt-1 mb-2">
                         <div class="d-flex mr-3">
-                            <div class="align-self-center">例）version：</div>
+                            <div class="align-self-center">version：</div>
                             <div class="align-self-center">
                                 <input class="form-control" v-model="items.info.version">
                             </div>
                         </div>
                     </div>
-
+                    <div v-for="result in items.results" :key="result.index">
+                        <p>Name：
+                            <input type="text" v-model="result.name.first">
+                            <input type="text" v-model="result.name.last">
+                        </p>
+                        <p>Country：
+                            <input type="text" v-model="result.location.country">
+                        </p>
+                        <p>Email：
+                            <input type="text" v-model="result.email">
+                        </p>
+                    </div>
                     <hr>
                     <div class="alert alert-warning" role="alert">
                         <i class="fas fa-book-reader"></i> 応用編：公開されているAPIを使ってデータを取得してましょう。「http://smsurf.app-rox.com/api/」
@@ -65,6 +76,9 @@ export default {
         },
         onBack() {
             this.$router.push({ name: 'home' })
+        },
+       async  getAnser() {
+
         }
     },
 }
