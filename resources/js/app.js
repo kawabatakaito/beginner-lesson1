@@ -74,6 +74,7 @@ Vue.component('pagination', require('./components/commons/Pagination.vue').defau
 Vue.component('barcode-component', require('./components/commons/BarcodeComponent.vue').default);
 Vue.component('modal-employee-select', require('./components/commons/ModalEmployeeSelect.vue').default);
 Vue.component('select-name', require('./components/commons/SelectName.vue').default);
+Vue.component("number-input", require("./components/commons/NumberInput.vue").default);
 
 const router = new VueRouter({
     mode: 'history',
@@ -105,6 +106,13 @@ const router = new VueRouter({
         { name: 'lesson1', path: '/lesson1', component: require('./components/lessons/Lesson1.vue').default },
         { name: 'lesson2', path: '/lesson2', component: require('./components/lessons/Lesson2.vue').default },
         { name: 'lesson3', path: '/lesson3', component: require('./components/lessons/Lesson3.vue').default },
+        { name: 'lesson4', path: '/lesson4', component: require('./components/lessons/Lesson4.vue').default },
+        { name: 'lesson5', path: '/lesson5', component: require('./components/lessons/Lesson5.vue').default },
+        { name: 'lesson6', path: '/lesson6', component: require('./components/lessons/Lesson6.vue').default },
+        { name: 'lesson7', path: '/lesson7', component: require('./components/lessons/Lesson7.vue').default },
+        { name: 'lesson8', path: '/lesson8', component: require('./components/lessons/Lesson8.vue').default },
+        { name: 'lesson9', path: '/lesson9', component: require('./components/lessons/Lesson9.vue').default },
+        { name: 'lesson10', path: '/lesson10', component: require('./components/lessons/Lesson10.vue').default },
 
         // not found
         { path: '*', component: require('./components/commons/NotFoundComponent.vue').default },
