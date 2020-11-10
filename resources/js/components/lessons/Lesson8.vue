@@ -22,6 +22,12 @@
                             <button type="button" class="btn btn-primary" @click="onNext">Leeson8-1へ</button>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-start mb-3">
+                        <div class="mr-4">
+                            <button type="button" class="btn btn-primary" @click="onData">Leeson8-2へ</button>
+                        </div>
+                    </div>
+                    <input type="text" v-model="text">
                 </div>
             </div>
         </div>
@@ -54,7 +60,10 @@ export default {
         },
         onBack() {
             this.$router.push({ name: 'home' })
-        }
+        },
+        onData() {
+        this.$router.push({ name: "lesson8-2" , params: {textData : this.text}}).catch(() => {});
+        },
     },
 }
 </script>

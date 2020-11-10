@@ -113,6 +113,8 @@ const router = new VueRouter({
         { name: 'lesson8', path: '/lesson8', component: require('./components/lessons/Lesson8.vue').default },
         { name: 'lesson9', path: '/lesson9', component: require('./components/lessons/Lesson9.vue').default },
         { name: 'lesson10', path: '/lesson10', component: require('./components/lessons/Lesson10.vue').default },
+        { name: 'lesson8-1', path: '/lesson8-1', component: require('./components/lessons/Lesson8-1.vue').default },
+        { name: 'lesson8-2', path: '/lesson8-2', component: require('./components/lessons/Lesson8-2.vue').default, props: true },
 
         // not found
         { path: '*', component: require('./components/commons/NotFoundComponent.vue').default },

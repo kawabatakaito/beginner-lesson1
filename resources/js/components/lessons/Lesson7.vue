@@ -113,7 +113,7 @@ export default {
             // this.items = customer
             axios.get('/api/customer')
             .then(response => {
-                this.items= response.data;
+                this.items = response.data;
             })
             .catch(error => {
                 console.log(error);
