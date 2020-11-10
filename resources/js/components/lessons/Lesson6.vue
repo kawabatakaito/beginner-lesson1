@@ -18,7 +18,7 @@
                         <div class="d-flex mr-3">
                             <div class="align-self-center">version：</div>
                             <div class="align-self-center">
-                                <input class="form-control" v-model="items.info.version">
+                                <input type="text" v-model="items.info.version">
                             </div>
                         </div>
                     </div>
@@ -88,13 +88,20 @@ export default {
             // 取得したデータはchromeのデバッグツールで確認できます。
             // https://qiita.com/nonkapibara/items/8b587013b6b817d6dfc4
             this.items = data
+            // axios.get('https://randomuser.me/api/')
+            // .then(response => {
+            //     this.items = response.data;
+            // })
+            // .catch(error => {
+            //     console.log(error);
+            // });
         },
         async getData() {
             // const {covid} = await axios.get('https://data.corona.go.jp/converted-json/covid19japan-all.json')
             // this.datas = covid
             axios.get('https://data.corona.go.jp/converted-json/covid19japan-all.json')
             .then(response => {
-                this.datas= response.data;
+                this.datas = response.data;
             })
             .catch(error => {
                 console.log(error);

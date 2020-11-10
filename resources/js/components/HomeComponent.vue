@@ -14,6 +14,7 @@
                 <router-link :to="{ name: 'lesson8' }" class="btn btn-primary btn-menu mr-3 mb-3">レッスン8</router-link>
                 <router-link :to="{ name: 'lesson9' }" class="btn btn-primary btn-menu mr-3 mb-3">レッスン9</router-link>
                 <router-link :to="{ name: 'lesson10' }" class="btn btn-primary btn-menu mr-3 mb-3">レッスン10</router-link>
+                <router-link :to="{ name: 'sample' }" class="btn btn-primary btn-menu mr-3 mb-3">サンプル</router-link>
                 <router-link :to="{ name: 'setting' }" class="btn btn-secondary btn-menu mr-3 mb-3">設定管理</router-link>
             </div>
         </div>
