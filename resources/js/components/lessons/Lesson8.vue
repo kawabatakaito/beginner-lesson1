@@ -28,6 +28,7 @@
                         </div>
                     </div>
                     <input type="text" v-model="text">
+                    <p>propsを通して引数を渡す</p>
                 </div>
             </div>
         </div>
