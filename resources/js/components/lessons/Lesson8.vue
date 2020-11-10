@@ -13,7 +13,15 @@
                         </div>
                     </div>
                     
-                    //
+                    <div class="quesion-header">ルーティング</div>
+                    <div class="mb-3">
+                        <a class="btn btn-link" href="https://hackmd.io/0e8J1D-6Qhq4k3_aqUi6qw?view">Lesson8の問題へ</a>
+                    </div>
+                    <div class="d-flex justify-content-start mb-3">
+                        <div class="mr-4">
+                            <button type="button" class="btn btn-primary" @click="onNext">Leeson8-1へ</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -28,7 +36,7 @@ export default {
     },
     data () {
         return {
-            //
+            text: '',
         }
     },
     mounted () {
@@ -41,6 +49,9 @@ export default {
         //
     },
     methods: {
+        onNext() {
+            this.$router.push({ name: 'lesson8-1' })
+        },
         onBack() {
             this.$router.push({ name: 'home' })
         }

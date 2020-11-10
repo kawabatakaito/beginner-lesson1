@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Selector as SelectorResource;
+use App\Item;
 use Illuminate\Http\Request;
 
 class LessonController extends Controller
@@ -64,19 +65,13 @@ class LessonController extends Controller
     }
 
     /**
-     * 検索用
+     * セレクトボックス用
      *
      * @return \Illuminate\Http\Response
      */
-    public function selector(Request $request)
+    public function selector()
     {
-        $items = Item::when($code, function ($query) use ($code) {
-                return $query->where('code', 'like', '%'.$code.'%');
-            })
-            ->when($name, function ($query) use ($name) {
-                return $query->where('name', 'like', '%'.$name.'%');
-            })
-            ->get();
-        return ItemSelectorResource::collection($items);
+        $items = Item::all();
+        return SelectorResource::collection($items);
     }
 }
