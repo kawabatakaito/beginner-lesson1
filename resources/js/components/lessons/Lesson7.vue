@@ -23,8 +23,13 @@
                     <div class="alert alert-info" role="alert">
                         <i class="far fa-lightbulb"></i> ヒント: Laravel側（バックエンド）のエラーは「storage\logs」に出力されます。 <br>
                     </div>
-                    
-                    // ここにデータを表示
+                    <h3>店舗情報</h3>
+                    <div v-for="shop in results" :key="shop.index">
+                        <p>ID：{{ shop.id }}</p>
+                        <p>名前：{{ shop.name }}</p>
+                        <p>コード：{{ shop.code }}</p>
+                        <p>電話番号：{{ shop.phonetic_name }}</p>
+                    </div>
 
                     <hr>
                     <div class="quesion-header">２．新規テーブル（customers）を作成してそのデータを画面に表示しましょう</div>
@@ -55,7 +60,16 @@
                         routes\api.phpに <code>Route::get('customer', 'API\CustomerController@index');</code> を定義
                     </div>
                     
-                    // ここにデータを表示
+                    <h3>顧客情報</h3>
+                    <div v-for="item in items" :key="item.index">
+                        <p>ID：{{ item.id }}</p>
+                        <p>コード：{{ item.code }}</p>
+                        <p>名前：{{ item.name }}</p>
+                        <p>郵便番号：{{ item.postal_code }}</p>
+                        <p>住所：{{ item.address }}</p>
+                        <p>電話番号：{{ item.tel }}</p>
+                        <p>FAX：{{ item.fax }}</p>
+                    </div>
 
                 </div>
             </div>
@@ -67,7 +81,7 @@
 <script>
 export default {
     props: {
-        //
+
     },
     data () {
         return {
@@ -77,6 +91,7 @@ export default {
     },
     mounted () {
         this.getInit()
+        this.getData()
     },
     watch: {
         //
@@ -93,10 +108,22 @@ export default {
             const {data} = await axios.get('/api/lesson/selector')
             this.results = data
         },
+        async getData() {
+            // const {customer} = await axios.get('/api/customer')
+            // this.items = customer
+            axios.get('/api/customer')
+            .then(response => {
+                this.items= response.data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+        },
         onBack() {
             this.$router.push({ name: 'home' })
         }
     },
+
 }
 </script>
 

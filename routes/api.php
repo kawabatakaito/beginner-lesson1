@@ -51,4 +51,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('lesson/selector', 'API\LessonController@index');
     ////
 
+    Route::get('customer', 'API\CustomerController@index');
+
 });

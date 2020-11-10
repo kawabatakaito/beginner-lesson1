@@ -20,3 +20,5 @@ Route::get('/{any}', function () {
     Route::auth();
     return view('layouts.app');
 })->where('any', '.*')->middleware('auth');
+
+Route::get('lesson/selector', 'API\LessonController@index');
