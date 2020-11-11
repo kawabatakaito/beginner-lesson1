@@ -116,8 +116,8 @@ const router = new VueRouter({
         { name: 'lesson8-1', path: '/lesson8-1', component: require('./components/lessons/Lesson8-1.vue').default },
         { name: 'lesson8-2', path: '/lesson8-2', component: require('./components/lessons/Lesson8-2.vue').default, props: true },
         { name: 'sample', path: '/sample', component: require('./components/lessons/sample.vue').default },
-        { name: 'sample-1', path: '/sample-1', component: require('./components/lessons/sample-1.vue').default },
-        { name: 'sample-2', path: '/sample-1', component: require('./components/lessons/sample-2.vue').default, props: true },
+        { name: 'sample.show', path: '/sample/show/:customer_id', component: require('./components/lessons/sample/show.vue').default, props: true },
+        { name: 'sample.create', path: '/sample/create', component: require('./components/lessons/sample/create.vue').default },
 
         // not found
         { path: '*', component: require('./components/commons/NotFoundComponent.vue').default },
