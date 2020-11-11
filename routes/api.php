@@ -54,10 +54,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('customer', 'API\CustomerController@index');
     Route::get('customer/{customer_id}', 'API\CustomerController@show');
     Route::post('customer/store', 'API\CustomerController@store');
-<<<<<<< HEAD
-=======
-    Route::post('customer/store', 'API\CustomerController@store');
->>>>>>> 752a138a5cf1ad22a3da12cdccbd09e010a9355a
     Route::delete('customer/{customer_id}', 'API\CustomerController@destroy');
 
 });
