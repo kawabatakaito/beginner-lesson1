@@ -13,7 +13,14 @@
                         </div>
                     </div>
                     
-                    //
+                    <div class="quesion-header">Laravel + Vue.js CRUD</div>
+                    <p>
+                        Lesson 7 で作成したテーブルcustomers のCRUD機能の実装<br>
+                        ・customersの一覧表示<br>
+                        ・customersの新規作成<br>
+                        ・customersの編集<br>
+                        ・customersの削除<br>
+                    </p>
                 </div>
             </div>
         </div>
