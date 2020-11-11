@@ -24,11 +24,13 @@
                         <i class="far fa-lightbulb"></i> ヒント: Laravel側（バックエンド）のエラーは「storage\logs」に出力されます。 <br>
                     </div>
                     <h3>店舗情報</h3>
+                    <p>-------------------------</p>
                     <div v-for="shop in results" :key="shop.index">
                         <p>ID：{{ shop.id }}</p>
                         <p>名前：{{ shop.name }}</p>
                         <p>コード：{{ shop.code }}</p>
                         <p>電話番号：{{ shop.phonetic_name }}</p>
+                        <p>-------------------------</p>
                     </div>
 
                     <hr>
@@ -61,6 +63,7 @@
                     </div>
                     
                     <h3>顧客情報</h3>
+                    <p>-------------------------</p>
                     <div v-for="item in items" :key="item.index">
                         <p>ID：{{ item.id }}</p>
                         <p>コード：{{ item.code }}</p>
@@ -69,6 +72,7 @@
                         <p>住所：{{ item.address }}</p>
                         <p>電話番号：{{ item.tel }}</p>
                         <p>FAX：{{ item.fax }}</p>
+                        <p>-------------------------</p>
                     </div>
 
                 </div>
