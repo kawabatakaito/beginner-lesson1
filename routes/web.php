@@ -22,3 +22,4 @@ Route::get('/{any}', function () {
 })->where('any', '.*')->middleware('auth');
 
 Route::get('lesson/selector', 'API\LessonController@index');
+
