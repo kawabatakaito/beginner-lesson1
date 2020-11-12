@@ -55,8 +55,13 @@
                                 <input type="text" class="form-control" id="fax" v-model="customer.fax"/>
                             </div>
                         </div>
-                        <div class="align-self-center">
-                            <button type="button" class="btn btn-dark" @click="onDelete">顧客情報を削除する</button>
+                        <div class="d-flex justify-content-start mt-4">
+                            <div class="mr-auto">
+                                <button type="button" class="btn btn-outline-danger" @click="onDelete">顧客情報を削除する</button>
+                            </div>
+                            <div class="mr-5">
+                                <button type="button" class="btn btn-dark" @click="onUpdate">顧客情報を更新する</button>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -96,7 +101,7 @@ export default {
     },
     methods: {
         onBack() {
-            this.$router.push({ name: 'sample' })
+            this.$router.push({ name: 'lesson9' })
         },
         async getCustomer() {
             axios.get('/api/customer/'+this.customer_id, this.customer_id)
@@ -108,11 +113,31 @@ export default {
             });
         },
         onDelete() {
-            axios.delete('/api/customer/'+this.customer_id, this.customer_id)
-            .then(this.$router.push({ name: 'sample' }))
+            if (!confirm('このデータを削除しますか？')) {
+                return
+            }
+            if (!confirm('このデータを本当に削除しますか？')) {
+                return
+            }
+            if (!confirm('本当に削除しますよ？')) {
+                return
+            }
+            axios.post('/api/customer/'+this.customer_id, { _method: 'delete' })
+            .then(alert('データを削除しました・・・'),this.$router.push({ name: 'lesson9' }))
             .catch(function (error) {
                 console.log(error);
             })
+        },
+        onUpdate() {
+            if (!confirm('データを更新しますか？')) {
+                return
+            }
+            axios.post('/api/customer/'+this.customer_id, { customer: this.customer, _method: 'put'})
+            .then(alert('データを更新しました！'),this.$router.push({ name: 'lesson9' }))
+            .catch(function (error) {
+                console.log(error);
+            })
+
         },
     }
 }

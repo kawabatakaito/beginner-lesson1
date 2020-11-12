@@ -33,7 +33,11 @@ class CustomerController extends Controller
         $customer->address = $request->address;
         $customer->tel = $request->tel;
         $customer->fax = $request->fax;
-        return $customer->save();
+        if ($customer->save()){
+            return;
+        } else {
+            return redirect('sample.create');
+        }
     }
 
     /**
@@ -56,7 +60,18 @@ class CustomerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $customer = Customer::find($id);
+        $customer->name = $request->customer['name'];
+        $customer->code = $request->customer['code'];
+        $customer->postal_code = $request->customer['postal_code'];
+        $customer->address = $request->customer['address'];
+        $customer->tel = $request->customer['tel'];
+        $customer->fax = $request->customer['fax'];
+        if ($customer->update()){
+            return;
+        } else {
+            return redirect('lesson9');
+        }
     }
 
     /**
@@ -68,6 +83,10 @@ class CustomerController extends Controller
     public function destroy($id)
     {
         $customer = Customer::find($id);
-        return $customer->delete();
+        if ($customer->delete()){
+            return;
+        } else {
+            return redirect('sample.show');
+        }
     }
 }

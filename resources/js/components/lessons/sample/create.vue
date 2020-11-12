@@ -85,11 +85,13 @@ export default {
     },
     methods: {
         onBack() {
-            this.$router.push({ name: 'sample' })
+            this.$router.push({ name: 'lesson9' })
         },
         addCustomer() {
+            if (!confirm('データを登録しますか？')) {
+                return
+            }
             axios.post('/api/customer/store', {
-                id: this.id,
                 code: this.code,
                 name: this.name,
                 postal_code: this.postal_code,
@@ -97,7 +99,7 @@ export default {
                 tel: this.tel,
                 fax: this.fax,
             })
-            .then(this.$router.push({ name: 'sample' }))
+            .then(alert('データを登録しました！'),this.$router.push({ name: 'lesson9' }))
             .catch(error => {
                 console.log(error);
             });
