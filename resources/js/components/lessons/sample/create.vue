@@ -50,7 +50,7 @@
                             </div>
                         </div>
                         <div class="align-self-center">
-                            <input type="submit" class="btn btn-dark" @click="addCustomer" value="新規登録">
+                            <button type="button" class="btn btn-dark" @click="addCustomer">新規登録</button>
                         </div>
                     </form>
                 </div>
@@ -62,12 +62,11 @@
 
 <script>
 export default {
-    props: [
-        'customer_id',
-    ],
+    props: {
+        //
+    },
     data () {
         return {
-            id: '',
             code: '',
             name: '',
             postal_code: '',

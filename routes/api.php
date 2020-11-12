@@ -57,4 +57,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('customer/{customer_id}', 'API\CustomerController@destroy');
     Route::put('customer/{customer_id}', 'API\CustomerController@update');
 
+    // dailes
+    Route::get('daily', 'API\DailyController@index');
+    Route::get('daily/{daily_id}', 'API\DailyController@show');
+    Route::get('daily.create', 'API\DailyController@create');
+
 });

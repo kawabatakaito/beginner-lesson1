@@ -119,6 +119,10 @@ const router = new VueRouter({
         { name: 'sample.show', path: '/sample/show/:customer_id', component: require('./components/lessons/sample/show.vue').default, props: true },
         { name: 'sample.create', path: '/sample/create', component: require('./components/lessons/sample/create.vue').default },
 
+        //dailes
+        { name: 'daily', path: '/daily', component: require('./components/dailies/index.vue').default },
+        { name: 'daily.create', path: '/daily/create', component: require('./components/dailies/create.vue').default },
+
         // not found
         { path: '*', component: require('./components/commons/NotFoundComponent.vue').default },
     ]
