@@ -15,8 +15,8 @@ class CreateLineitemsTable extends Migration
     {
         Schema::create('lineitems', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('code')->nullable(false);
-            $table->string('name')->nullable(false);
+            $table->string('code')->nullable();
+            $table->string('name')->nullable();
             $table->string('phonetic_name')->nullable();
             $table->timestamps();
         });
