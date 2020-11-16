@@ -57,11 +57,13 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('customer/{customer_id}', 'API\CustomerController@destroy');
     Route::put('customer/{customer_id}', 'API\CustomerController@update');
 
-    // dailies
-    Route::get('daily', 'API\DailiesController@index');
-    Route::get('daily/{daily_id}', 'API\DailiesController@show');
-    Route::get('daily/create', 'API\DailiesController@create');
-    Route::post('daily/store', 'API\DailiesController@store');
+    // DailyReport
+    Route::get('daily_report', 'API\DailyReportController@index');
+    Route::get('daily_report/{daily_report_id}', 'API\DailyReportController@show');
+    Route::put('daily_report/{daily_report_id}', 'API\DailyReportController@update');
+    Route::get('daily_report/create', 'API\DailyReportController@create');
+    Route::post('daily_report/store', 'API\DailyReportController@store');
+    Route::delete('daily_report/{daily_report_id}', 'API\DailyReportController@destroy');
 
     // daily_details
     Route::get('daily_details', 'API\DailyDetailController@index');

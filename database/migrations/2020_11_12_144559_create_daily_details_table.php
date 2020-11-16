@@ -15,7 +15,7 @@ class CreateDailyDetailsTable extends Migration
     {
         Schema::create('daily_details', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedInteger('product_dailies_id')->nullable();
+            $table->unsignedInteger('daily_report_id')->nullable();
             $table->unsignedInteger('item_id')->nullable();
             $table->unsignedInteger('employee_id')->nullable();
             $table->boolean('is_oxygen_scavenger')->default(false);
