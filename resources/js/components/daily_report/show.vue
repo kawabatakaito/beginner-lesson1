@@ -177,37 +177,6 @@
 
                 <button type="button" class="btn btn-success btn-state" @click="onUpdate('state')">一時保存</button>
 
-                <div class="mt-5"></div>
-                    <div class="row">
-                        <div class="col-12 mt-3"></div>
-                        <div class="align-self-center">
-                            <button type="button" class="btn btn-primary btn-sm"
-                                data-toggle="collapse"
-                                data-target="#example-2"
-                                aria-expand="false"
-                                aria-controls="example-2">デバック</button>
-                        </div>
-                    </div>
-
-                <div class="collapse" id="example-2">
-                    <div class="mt-5"></div>
-                    <p>ライン名：{{daily_report.line_name}}　　作業日：{{daily_report.worked_on}}</p>
-                    <p>品番：{{daily_report.daily_detail.code}}　　担当者：{daily_report.daily_detail..last_name}}</p>
-                    <p>脱酸素剤：{{daily_report.daily_detail.is_oxygen_scavenger}}　包装材料：{{daily_report.daily_detail.is_packaging_material}}　充填ガス：{{daily_report.daily_detail.is_filling_gas}}　作業員数：{{daily_report.daily_detail.workers_number}}</p>
-                    <p>金属検出機動作確認</p>
-                    <p>Fe：{{daily_report.daily_detail.start_metal_detector_fe_check}}　SUS：{{daily_report.daily_detail.start_metal_detector_sus_check}}</p>
-                    <p>X線異物検出機動作確認</p>
-                    <p>Fe：{{daily_report.daily_detail.start_x_detector_fe_check}}　SUS：{{daily_report.daily_detail.start_x_detector_sus_check}}　GI：{{daily_report.daily_detail.start_x_detector_gi_check}}　PVC：{{daily_report.daily_detail.start_x_detector_pvc_check}}</p>
-                    <p>作業開始：{{daily_report.daily_detail.started_on}}　作業終了：{{daily_report.daily_detail.finished_on}}</p>
-                    <p>良品数：{{daily_report.daily_detail.pass_amount}}　リパック数：{{daily_report.daily_detail.repack_amount}}</p>
-                    <p>不良品数</p>
-                    <p>軽量：{{daily_report.daily_detail.lightweight}}　外観等：{{daily_report.daily_detail.appearance}}　金属排除：{{daily_report.daily_detail.metal_removal}}　X線排除：{{daily_report.daily_detail.x_removal}}</p>
-                    <p>金属検出機動作確認</p>
-                    <p>Fe：{{daily_report.daily_detail.stop_metal_detector_fe_check}}　SUS：{{daily_report.daily_detail.stop_metal_detector_sus_check}}</p>
-                    <p>X線異物検出機動作確認</p>
-                    <p>Fe：{{daily_report.daily_detail.stop_x_detector_fe_check}}　SUS：{{daily_report.daily_detail.stop_x_detector_sus_check}}　GI：{{daily_report.daily_detail.stop_x_detector_gi_check}}　PVC：{{daily_report.daily_detail.stop_x_detector_pvc_check}}</p>
-                    <p>state：　{{daily_report.daily_detail.state}}　is_finished：{{daily_report.daily_detail.is_finished}}</p>
-                </div>
             </div>
         </div>
     </div>
@@ -269,13 +238,12 @@ export default {
     },
     methods: {
         async getDailyReport() {
-            axios.get('/api/daily_report/'+this.daily_report_id, this.daily_report_id)
-            .then(response => {
-                this.daily_report = response.data;
-            })
-            .catch(error => {
-                console.log(error);
-            });
+            try {
+                const {data} = await axios.get('/api/daily_report/'+this.daily_report_id, this.daily_report_id)
+                this.daily_report = data
+            } catch(e) {
+                console.log(error)
+            }
         },
         onBack() {
             this.$router.push({ name: 'daily_report' })

@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DailyReport extends Model
 {
-    Public function daily_detail()
+    Public function daily_details()
     {
-      return $this->hasOne('App\DailyDetail');
+      return $this->hasMany('App\DailyDetail');
     }
 }

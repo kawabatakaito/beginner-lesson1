@@ -17,7 +17,7 @@
                     <div class="col-12 mt-4"></div>
                     <div class="align-self-center font-bold ml-3">ライン</div>
                     <div class="align-self-center">
-                        <select id="line_name" class="form-control" v-model="daily_reports.line_name">
+                        <select id="line_name" class="form-control" v-model="daily_report.line_name">
                             <option></option>
                             <option>1</option>
                             <option>2</option>
@@ -27,7 +27,7 @@
                     </div>
                     <div class="align-self-center font-bold">号機</div>
                     <div class="align-self-center ml-3 mr-1 font-bold">作業日</div>
-                    <input type="text" v-model="daily_reports.worked_on" class="align-self-center" readonly>
+                    <input type="text" v-model="daily_report.worked_on" class="align-self-center" readonly>
                 </div>
                 <div class="row">
                     <div class="col-12 mt-3"></div>
@@ -175,37 +175,6 @@
 
                 <button type="button" class="btn btn-success btn-state" @click="onCreate('state')">一時保存</button>
 
-                <div class="mt-5"></div>
-                    <div class="row">
-                        <div class="col-12 mt-3"></div>
-                        <div class="align-self-center">
-                            <button type="button" class="btn btn-primary btn-sm"
-                                data-toggle="collapse"
-                                data-target="#example-2"
-                                aria-expand="false"
-                                aria-controls="example-2">デバック</button>
-                        </div>
-                    </div>
-
-                <div class="collapse" id="example-2">
-                    <div class="mt-5"></div>
-                    <p>ライン名：{{daily_reports.line_name}}　　作業日：{{daily_reports.worked_on}}</p>
-                    <p>品番：{{items.code}}　　担当者：{{employees.last_name}}</p>
-                    <p>脱酸素剤：{{daily_details.is_oxygen_scavenger}}　包装材料：{{daily_details.is_packaging_material}}　充填ガス：{{daily_details.is_filling_gas}}　作業員数：{{daily_details.workers_number}}</p>
-                    <p>金属検出機動作確認</p>
-                    <p>Fe：{{daily_details.start_metal_detector_fe_check}}　SUS：{{daily_details.start_metal_detector_sus_check}}</p>
-                    <p>X線異物検出機動作確認</p>
-                    <p>Fe：{{daily_details.start_x_detector_fe_check}}　SUS：{{daily_details.start_x_detector_sus_check}}　GI：{{daily_details.start_x_detector_gi_check}}　PVC：{{daily_details.start_x_detector_pvc_check}}</p>
-                    <p>作業開始：{{daily_details.started_on}}　作業終了：{{daily_details.finished_on}}</p>
-                    <p>良品数：{{daily_details.pass_amount}}　リパック数：{{daily_details.repack_amount}}</p>
-                    <p>不良品数</p>
-                    <p>軽量：{{daily_details.lightweight}}　外観等：{{daily_details.appearance}}　金属排除：{{daily_details.metal_removal}}　X線排除：{{daily_details.x_removal}}</p>
-                    <p>金属検出機動作確認</p>
-                    <p>Fe：{{daily_details.stop_metal_detector_fe_check}}　SUS：{{daily_details.stop_metal_detector_sus_check}}</p>
-                    <p>X線異物検出機動作確認</p>
-                    <p>Fe：{{daily_details.stop_x_detector_fe_check}}　SUS：{{daily_details.stop_x_detector_sus_check}}　GI：{{daily_details.stop_x_detector_gi_check}}　PVC：{{daily_details.stop_x_detector_pvc_check}}</p>
-                    <p>state：　{{daily_details.state}}　is_finished：{{daily_details.is_finished}}</p>
-                </div>
             </div>
         </div>
     </div>
@@ -219,9 +188,10 @@ export default {
     data() {
         return {
             message: '',
-            daily_reports: {
+            daily_report: {
                 line_name: '',
-                worked_on: Date,
+                worked_on: '',
+                daily_details: [],
             },
             items: {
                 id: 100,
@@ -282,7 +252,7 @@ export default {
             this.$router.push({ name: 'daily_report' })
         },
         getDailyReports() {
-            return this.daily_reports
+            return this.daily_report
         },
         getItem() {
             return this.items
@@ -292,7 +262,7 @@ export default {
         },
         setToday() {
             let moment = require("moment");
-            return this.daily_reports.worked_on = moment().format("YYYY/MM/DD")
+            return this.daily_report.worked_on = moment().format("YYYY/MM/DD")
         },
         getDailyDetail() {
             return this.daily_details
@@ -323,38 +293,39 @@ export default {
             this.daily_details.item_id = this.items.id
             this.daily_details.employee_id = this.employees.user_id
             axios.post('/api/daily_report/store', {
-                    // daily_reports
-                line_name: this.daily_reports.line_name,
-                worked_on: this.daily_reports.worked_on,
-                    // daily_details
-                item_id: this.daily_details.item_id,
-                employee_id: this.daily_details.employee_id,
-                is_oxygen_scavenger: this.daily_details.is_oxygen_scavenger,
-                is_packaging_material: this.daily_details.is_packaging_material,
-                is_filling_gas: this.daily_details.is_filling_gas,
-                workers_number: this.daily_details.workers_number,
-                start_metal_detector_fe_check: this.daily_details.start_metal_detector_fe_check,
-                start_metal_detector_sus_check: this.daily_details.start_metal_detector_sus_check,
-                start_x_detector_fe_check: this.daily_details.start_x_detector_fe_check,
-                start_x_detector_sus_check: this.daily_details.start_x_detector_sus_check,
-                start_x_detector_gi_check: this.daily_details.start_x_detector_gi_check,
-                start_x_detector_pvc_check: this.daily_details.start_x_detector_pvc_check,
-                started_on: this.daily_details.started_on,
-                finished_on: this.daily_details.finished_on,
-                pass_amount: this.daily_details.pass_amount,
-                repack_amount: this.daily_details.repack_amount,
-                lightweight: this.daily_details.lightweight,
-                appearance: this.daily_details.appearance,
-                metal_removal: this.daily_details.metal_removal,
-                x_removal: this.daily_details.x_removal,
-                stop_metal_detector_fe_check: this.daily_details.stop_metal_detector_fe_check,
-                stop_metal_detector_sus_check: this.daily_details.stop_metal_detector_sus_check,
-                stop_x_detector_fe_check: this.daily_details.stop_x_detector_fe_check,
-                stop_x_detector_sus_check: this.daily_details.stop_x_detector_sus_check,
-                stop_x_detector_gi_check: this.daily_details.stop_x_detector_gi_check,
-                stop_x_detector_pvc_check: this.daily_details.stop_x_detector_pvc_check,
-                state: this.daily_details.state,
-                is_finished: this.daily_details.is_finished,
+                    daily_report: this.daily_report
+                    // daily_report
+                    // line_name: this.daily_report.line_name,
+                    // worked_on: this.daily_report.worked_on,
+                    //     // daily_details
+                    // item_id: this.daily_details.item_id,
+                    // employee_id: this.daily_details.employee_id,
+                    // is_oxygen_scavenger: this.daily_details.is_oxygen_scavenger,
+                    // is_packaging_material: this.daily_details.is_packaging_material,
+                    // is_filling_gas: this.daily_details.is_filling_gas,
+                    // workers_number: this.daily_details.workers_number,
+                    // start_metal_detector_fe_check: this.daily_details.start_metal_detector_fe_check,
+                    // start_metal_detector_sus_check: this.daily_details.start_metal_detector_sus_check,
+                    // start_x_detector_fe_check: this.daily_details.start_x_detector_fe_check,
+                    // start_x_detector_sus_check: this.daily_details.start_x_detector_sus_check,
+                    // start_x_detector_gi_check: this.daily_details.start_x_detector_gi_check,
+                    // start_x_detector_pvc_check: this.daily_details.start_x_detector_pvc_check,
+                    // started_on: this.daily_details.started_on,
+                    // finished_on: this.daily_details.finished_on,
+                    // pass_amount: this.daily_details.pass_amount,
+                    // repack_amount: this.daily_details.repack_amount,
+                    // lightweight: this.daily_details.lightweight,
+                    // appearance: this.daily_details.appearance,
+                    // metal_removal: this.daily_details.metal_removal,
+                    // x_removal: this.daily_details.x_removal,
+                    // stop_metal_detector_fe_check: this.daily_details.stop_metal_detector_fe_check,
+                    // stop_metal_detector_sus_check: this.daily_details.stop_metal_detector_sus_check,
+                    // stop_x_detector_fe_check: this.daily_details.stop_x_detector_fe_check,
+                    // stop_x_detector_sus_check: this.daily_details.stop_x_detector_sus_check,
+                    // stop_x_detector_gi_check: this.daily_details.stop_x_detector_gi_check,
+                    // stop_x_detector_pvc_check: this.daily_details.stop_x_detector_pvc_check,
+                    // state: this.daily_details.state,
+                    // is_finished: this.daily_details.is_finished,
             })
             .then(alert(this.message),this.$router.push({ name: 'daily_report' }))
             .catch(error => {

@@ -9,6 +9,9 @@
                     <div class="align-self-center mr-5">
                         <button type="button" class="btn btn-primary" @click="onCreate">新規作成</button>
                     </div>
+                    <div class="align-self-center mr-5">
+                        <button type="button" class="btn btn-primary" @click="onCreate2">新規作成2</button>
+                    </div>
                     <div class="align-self-center">
                         <button type="button" class="btn btn-dark" @click="onBack">戻る</button>
                     </div>
@@ -27,6 +30,9 @@
                             <option></option>
                             <option>1</option>
                             <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
                         </select>
                     </div>
                     <div class="col-2 align-self-center"><input type="text" style="width:5rem;"></div>
@@ -48,12 +54,12 @@
                 <tbody>
                     <tr  class="clickable" v-for="daily_report in daily_reports" :key="daily_report.id" @click="onShow(daily_report.id)">
                         <td class="text-center align-middle">{{ daily_report.worked_on }}</td>
-                        <td class="text-center align-middle" v-if="daily_report.daily_detail">{{ daily_report.daily_detail.item_id }}</td>
+                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['item_id'] }}</td>
                         <td class="text-center align-middle">{{ daily_report.line_name }}</td>
-                        <td class="text-center align-middle" v-if="daily_report.daily_detail">{{ daily_report.daily_detail.workers_number }}</td>
-                        <td class="text-center align-middle" v-if="daily_report.daily_detail">{{ daily_report.daily_detail.started_on }}</td>
-                        <td class="text-center align-middle" v-if="daily_report.daily_detail">{{ daily_report.daily_detail.pass_amount }}</td>
-                        <td class="text-center align-middle" v-if="daily_report.daily_detail">{{ daily_report.daily_detail.state }}</td>
+                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['workers_number'] }}</td>
+                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['started_on'] }}</td>
+                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['pass_amount'] }}</td>
+                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['state'] }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -73,36 +79,36 @@ export default {
             daily_reports: {
                 line_name: '',
                 worked_on: '',
-            daily_detail: {
-                item_id: '',
-                employee_id: '',
-                is_oxygen_scavenger: false,
-                is_packaging_material: false,
-                is_filling_gas: false,
-                workers_number: '',
-                start_metal_detector_fe_check: false,
-                start_metal_detector_sus_check: false,
-                start_x_detector_fe_check: false,
-                start_x_detector_sus_check: false,
-                start_x_detector_gi_check: false,
-                start_x_detector_pvc_check: false,
-                started_on: '00:00',
-                finished_on: '00:00',
-                pass_amount: '',
-                repack_amount: '',
-                lightweight: '',
-                appearance: '',
-                metal_removal: '',
-                x_removal: '',
-                stop_metal_detector_fe_check: false,
-                stop_metal_detector_sus_check: false,
-                stop_x_detector_fe_check: false,
-                stop_x_detector_sus_check: false,
-                stop_x_detector_gi_check: false,
-                stop_x_detector_pvc_check: false,
-                state: '',
-                is_finished: false,
-            },
+                daily_detail: {
+                    item_id: '',
+                    employee_id: '',
+                    is_oxygen_scavenger: false,
+                    is_packaging_material: false,
+                    is_filling_gas: false,
+                    workers_number: '',
+                    start_metal_detector_fe_check: false,
+                    start_metal_detector_sus_check: false,
+                    start_x_detector_fe_check: false,
+                    start_x_detector_sus_check: false,
+                    start_x_detector_gi_check: false,
+                    start_x_detector_pvc_check: false,
+                    started_on: '00:00',
+                    finished_on: '00:00',
+                    pass_amount: '',
+                    repack_amount: '',
+                    lightweight: '',
+                    appearance: '',
+                    metal_removal: '',
+                    x_removal: '',
+                    stop_metal_detector_fe_check: false,
+                    stop_metal_detector_sus_check: false,
+                    stop_x_detector_fe_check: false,
+                    stop_x_detector_sus_check: false,
+                    stop_x_detector_gi_check: false,
+                    stop_x_detector_pvc_check: false,
+                    state: '',
+                    is_finished: false,
+                },
             }
         }
     },
@@ -120,14 +126,16 @@ export default {
         onCreate() {
             this.$router.push({ name: 'daily_report.create' })
         },
+        onCreate2() {
+            this.$router.push({ name: 'daily_report.create2' })
+        },
         async getDailyReports() {
-            axios.get('/api/daily_report')
-            .then(response => {
-                this.daily_reports = response.data;
-            })
-            .catch(error => {
-                console.log(error);
-            });
+            try {
+                const {data} = await axios.get('/api/daily_report')
+                this.daily_reports = data
+            } catch (e) {
+                console.log(error)
+            }  
         },
         onShow(daily_report_id) {
             this.$router.push({ name: 'daily_report.show', params: { daily_report_id: daily_report_id }})
