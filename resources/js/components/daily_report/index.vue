@@ -52,14 +52,16 @@
                 </thead>
 
                 <tbody>
-                    <tr  class="clickable" v-for="daily_report in daily_reports" :key="daily_report.id" @click="onShow(daily_report.id)">
-                        <td class="text-center align-middle">{{ daily_report.worked_on }}</td>
-                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['item_id'] }}</td>
-                        <td class="text-center align-middle">{{ daily_report.line_name }}</td>
-                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['workers_number'] }}</td>
-                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['started_on'] }}</td>
-                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['pass_amount'] }}</td>
-                        <td class="text-center align-middle">{{ daily_report.daily_details[0]['state'] }}</td>
+                <!-- ERROR!! Duplicate keys detected: This may cause an update error. 
+                <tr class="clickable" v-for="daily_detail in daily_details" :key="daily_detail.id" @click="onShow(daily_detail.id)"> -->
+                    <tr class="clickable" v-for="(daily_detail, index) in daily_details" :key="'key'+index" @click="onShow(daily_detail.id)">
+                            <td class="text-center align-middle">{{ daily_detail.worked_on }}</td>
+                            <td class="text-center align-middle">{{ daily_detail.item_id }}</td>
+                            <td class="text-center align-middle">{{ daily_detail.line_name }}</td>
+                            <td class="text-center align-middle">{{ daily_detail.workers_number }}</td>
+                            <td class="text-center align-middle">{{ daily_detail.started_on }}</td>
+                            <td class="text-center align-middle">{{ daily_detail.pass_amount }}</td>
+                            <td class="text-center align-middle">{{ daily_detail.state }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -76,39 +78,15 @@ export default {
     data() {
         return {
             today: '',
-            daily_reports: {
+            daily_details: {
+                id: '',
                 line_name: '',
                 worked_on: '',
-                daily_detail: {
-                    item_id: '',
-                    employee_id: '',
-                    is_oxygen_scavenger: false,
-                    is_packaging_material: false,
-                    is_filling_gas: false,
-                    workers_number: '',
-                    start_metal_detector_fe_check: false,
-                    start_metal_detector_sus_check: false,
-                    start_x_detector_fe_check: false,
-                    start_x_detector_sus_check: false,
-                    start_x_detector_gi_check: false,
-                    start_x_detector_pvc_check: false,
-                    started_on: '00:00',
-                    finished_on: '00:00',
-                    pass_amount: '',
-                    repack_amount: '',
-                    lightweight: '',
-                    appearance: '',
-                    metal_removal: '',
-                    x_removal: '',
-                    stop_metal_detector_fe_check: false,
-                    stop_metal_detector_sus_check: false,
-                    stop_x_detector_fe_check: false,
-                    stop_x_detector_sus_check: false,
-                    stop_x_detector_gi_check: false,
-                    stop_x_detector_pvc_check: false,
-                    state: '',
-                    is_finished: false,
-                },
+                item_id: '',
+                workers_number: '',
+                started_on: '00:00',
+                pass_amount: '',
+                state: '',
             }
         }
     },
@@ -132,7 +110,7 @@ export default {
         async getDailyReports() {
             try {
                 const {data} = await axios.get('/api/daily_report')
-                this.daily_reports = data
+                this.daily_details = data
             } catch (e) {
                 console.log(error)
             }  
