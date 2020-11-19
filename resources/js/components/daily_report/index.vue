@@ -9,9 +9,6 @@
                     <div class="align-self-center mr-5">
                         <button type="button" class="btn btn-primary" @click="onCreate">新規作成</button>
                     </div>
-                    <div class="align-self-center mr-5">
-                        <button type="button" class="btn btn-primary" @click="onCreate2">新規作成2</button>
-                    </div>
                     <div class="align-self-center">
                         <button type="button" class="btn btn-dark" @click="onBack">戻る</button>
                     </div>
@@ -103,9 +100,6 @@ export default {
         },
         onCreate() {
             this.$router.push({ name: 'daily_report.create' })
-        },
-        onCreate2() {
-            this.$router.push({ name: 'daily_report.create2' })
         },
         async getDailyReports() {
             try {

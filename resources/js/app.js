@@ -122,7 +122,6 @@ const router = new VueRouter({
         //daily_report
         { name: 'daily_report', path: '/daily_report', component: require('./components/daily_report/index.vue').default },
         { name: 'daily_report.create', path: '/daily_report/create', component: require('./components/daily_report/create.vue').default },
-        { name: 'daily_report.create2', path: '/daily_report/create2', component: require('./components/daily_report/create2.vue').default },
         { name: 'daily_report.show', path: '/daily_report/show/:daily_report_id', component: require('./components/daily_report/show.vue').default, props: true },
 
         // not found

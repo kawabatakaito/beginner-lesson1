@@ -27,7 +27,7 @@
                     </div>
                     <div class="align-self-center font-bold">号機</div>
                     <div class="align-self-center ml-3 mr-1 font-bold">作業日</div>
-                    <input type="text" v-model="daily_report.worked_on" class="align-self-center" readonly>
+                    <input type="date" v-model="daily_report.worked_on" class="align-self-center">
                 </div>
 
             <!-- v-forの中の＋ボタンを押すと次のdaily_report.daily_detailを追加 -->
@@ -40,7 +40,7 @@
                                 <div class="align-self-center ml-3 mr-1 font-bold">品番</div>
                                 <input type="text" v-model="daily_detail.item_id" class="align-self-center">：{{ items.name }}
                                 <div class="align-self-center ml-3 mr-1 font-bold">担当者</div>
-                                <input type="text" v-model="daily_detail.employees_id" class="align-self-center" readonly>：{{ employees.last_name }}
+                                <input type="text" v-model="daily_detail.employee_id" class="align-self-center" readonly>：{{ employees.last_name }}
                             </div>
                     
                             <div class="row">
@@ -98,7 +98,7 @@
                             <div class="row">
                                 <div class="col-12 mt-3"></div>
                                 <button type="button" class="btn btn-success btn-lg col-8 ml-3" @click="onStart(daily_detail)">作業開始</button>
-                                <div class="ml-3 align-self-center time-font">{{ daily_detail.started_on }}</div>
+                                <div class="ml-3 align-self-center time-font">{{ startTime(daily_detail.started_on) }}</div>
                             </div>
 
                             <div class="row">
@@ -125,7 +125,7 @@
                             <div class="row">
                                 <div class="col-12 mt-3"></div>
                                 <button type="button" class="btn btn-danger btn-lg col-8 ml-3" @click="onFinish(daily_detail)">作業終了</button>
-                                <div class="ml-3 align-self-center time-font">{{ daily_detail.finished_on }}</div>
+                                <div class="ml-3 align-self-center time-font">{{ finishTime(daily_detail.finished_on) }}</div>
                             </div>
 
                             <div class="row">
@@ -245,6 +245,7 @@ export default {
         }
     },
     mounted () {
+        this.getUser()
         this.getDailyReport()
         this.getItem()
         this.getEmployee()
@@ -253,7 +254,7 @@ export default {
         //
     },
     computed: {
-        // 
+
     },
     methods: {
             // ↓　axios.create()なしでは＋ボタン反応しない--axios.create()を使うことでリクエストのインスタンスを作ることもできる。引数には設定を渡すことができる。
@@ -264,6 +265,10 @@ export default {
             } catch(e) {
                 console.log(error)
             }
+        },
+        getUser() {
+            var user = this.$store.state.user
+            this.default_daily_detail.employee_id = user.employee_id
         },
         onBack() {
             this.$router.push({ name: 'daily_report' })
@@ -281,26 +286,6 @@ export default {
         onFinish(daily_detail) { 
             daily_detail.state = '完了'
             return daily_detail.finished_on = moment().format("HH:mm")
-        },
-        onCreate(status) {
-            if (status == 'state') {
-                if (!confirm('このデータを一時保存しますか？')) {
-                    return
-                }
-                this.message = 'データを一時保存しました'
-            } else if (status == 'finished') {
-                if (!confirm('このデータを登録しますか？')) {
-                    return
-                }
-                this.message = 'データを登録しました'
-            }
-            axios.post('/api/daily_report/store2', {
-                daily_report: this.daily_report,
-            })
-            .then(alert(this.message),this.$router.push({ name: 'daily_report' }))
-            .catch(error => {
-                console.log(error);
-            });
         },
         onPlus(index) {
             this.daily_report.daily_details.splice(index + 1, 0, _.cloneDeep(this.default_daily_detail))
@@ -332,6 +317,15 @@ export default {
             .catch(function (error) {
                 console.log(error);
             });
+        },
+        startTime(time) {
+            // そのままだと"HH:mm:ss"形式なるので、timeをDate型にしてから再度"HH:mm"形式に変換
+            let change = moment().format("YYYY/MM/DD ")+time
+            return moment(change).format("HH:mm")
+        },
+        finishTime(time) {
+            let change = moment().format("YYYY/MM/DD ")+time
+            return moment(change).format("HH:mm")
         },
     },
 }
