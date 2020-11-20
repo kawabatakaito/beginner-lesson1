@@ -18,12 +18,13 @@
                     <div class="col-2">ライン</div>
                     <div class="col-2">商品名</div>
                     <div class="col-2"></div>
-
+                    <!-- 作業日 -->
                     <div class="col-6 align-self-center">
-                        <input type="date" class="mr-1" v-model="today">～<input type="date" class="ml-1" v-model="today">
+                        <input type="date" class="mr-1" v-model="from_worked_on">～<input type="date" class="ml-1" v-model="to_worked_on">
                     </div>
+                    <!-- ライン -->
                     <div class="col-2 align-self-center">
-                        <select id="line_name" class="form-control">
+                        <select id="line_name" class="form-control" v-model="line_name">
                             <option></option>
                             <option>1</option>
                             <option>2</option>
@@ -32,36 +33,55 @@
                             <option>5</option>
                         </select>
                     </div>
-                    <div class="col-2 align-self-center"><input type="text" style="width:5rem;"></div>
-                    <div class="col-2 align-self-center"><button type="button" class="btn btn-success">検索</button></div>
+                    <!-- 商品名 -->
+                    <div class="col-2 align-self-center"><input type="text" style="width:5rem;" v-model="item_id"></div>
+                    <div class="col-2 align-self-center"><button type="button" class="btn btn-success" @click="getDailyReports">検索</button></div>
                 </div>
-                    <table class="table table-sm mt-3" key="processes">
-                <thead>
-                    <tr>
-                        <th class="text-center bg-primary text-white">作業日</th>
-                        <th class="text-center bg-primary text-white">商品名</th>
-                        <th class="text-center bg-primary text-white">ライン</th>
-                        <th class="text-center bg-primary text-white">作業員数</th>
-                        <th class="text-center bg-primary text-white">作業時間</th>
-                        <th class="text-center bg-primary text-white">良品数</th>
-                        <th class="text-center bg-primary text-white">状態</th>
-                    </tr>
-                </thead>
+                <table class="table table-sm mt-3" key="processes">
+                    <thead>
+                        <tr>
+                            <th class="text-center bg-primary text-white">作業日</th>
+                            <th class="text-center bg-primary text-white">商品名</th>
+                            <th class="text-center bg-primary text-white">ライン</th>
+                            <th class="text-center bg-primary text-white">作業員数</th>
+                            <th class="text-center bg-primary text-white">作業時間</th>
+                            <th class="text-center bg-primary text-white">良品数</th>
+                            <th class="text-center bg-primary text-white">状態</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                <!-- ERROR!! Duplicate keys detected: This may cause an update error. 
-                <tr class="clickable" v-for="daily_detail in daily_details" :key="daily_detail.id" @click="onShow(daily_detail.id)"> -->
-                    <tr class="clickable" v-for="(daily_detail, index) in daily_details" :key="'key'+index" @click="onShow(daily_detail.id)">
-                            <td class="text-center align-middle">{{ daily_detail.worked_on }}</td>
-                            <td class="text-center align-middle">{{ daily_detail.item_id }}</td>
-                            <td class="text-center align-middle">{{ daily_detail.line_name }}</td>
-                            <td class="text-center align-middle">{{ daily_detail.workers_number }}</td>
-                            <td class="text-center align-middle">{{ daily_detail.started_on }}</td>
-                            <td class="text-center align-middle">{{ daily_detail.pass_amount }}</td>
-                            <td class="text-center align-middle">{{ daily_detail.state }}</td>
-                    </tr>
-                </tbody>
-            </table>
+                    <tbody>
+                        <tr class="clickable" v-for="(daily_report, index) in daily_reports" :key="index" @click="onShow(daily_report.id)">
+                            <td class="text-center align-middle">{{ daily_report.worked_on }}</td>
+                            <td class="text-center align-middle">
+                                <div v-for="detail in daily_report.daily_details" :key="detail.id">
+                                    {{ detail.item_id }}
+                                </div>
+                            </td>
+                            <td class="text-center align-middle">{{ daily_report.line_name }}</td>
+                            <td class="text-center align-middle">
+                                <div v-for="detail in daily_report.daily_details" :key="detail.id">
+                                    {{ detail.workers_number }}
+                                </div>
+                            </td>
+                            <td class="text-center align-middle">
+                                <div v-for="detail in daily_report.daily_details" :key="detail.id">
+                                    {{ detail.started_on }}
+                                </div>
+                            </td>
+                            <td class="text-center align-middle">
+                                <div v-for="detail in daily_report.daily_details" :key="detail.id">
+                                    {{ detail.pass_amount }}
+                                </div>
+                            </td>
+                            <td class="text-center align-middle">
+                                <div v-for="detail in daily_report.daily_details" :key="detail.id">
+                                    {{ detail.state }}
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -74,21 +94,14 @@ export default {
     },
     data() {
         return {
-            today: '',
-            daily_details: {
-                id: '',
-                line_name: '',
-                worked_on: '',
-                item_id: '',
-                workers_number: '',
-                started_on: '00:00',
-                pass_amount: '',
-                state: '',
-            }
+            from_worked_on: '',
+            to_worked_on: '',
+            line_name: '',
+            item_id: '',
+            daily_reports: [],
         }
     },
     mounted () {
-        this.getDailyReports()
         this.setToday()
     },
     watch: {
@@ -103,8 +116,15 @@ export default {
         },
         async getDailyReports() {
             try {
-                const {data} = await axios.get('/api/daily_report')
-                this.daily_details = data
+                const {data} = await axios.get('/api/daily_report',{
+                    params:{
+                        from_worked_on: this.from_worked_on,
+                        to_worked_on: this.to_worked_on,
+                        line_name: this.line_name,
+                        item_id: this.item_id,
+                    }
+                })
+                this.daily_reports = data
             } catch (e) {
                 console.log(error)
             }  
@@ -114,7 +134,8 @@ export default {
         },
         setToday() {
             let moment = require("moment");
-            return this.today = moment().format("YYYY-MM-DD")
+            this.from_worked_on = moment().format("YYYY-MM-DD")
+            this.to_worked_on = moment().format("YYYY-MM-DD")
         },
     },
 }

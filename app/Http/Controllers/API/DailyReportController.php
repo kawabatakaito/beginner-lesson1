@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DailyReportForList as DailyReportForListResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -10,14 +11,34 @@ use App\DailyReport;
 use App\DailyDetail;
 use App\Item;
 
+    
 class DailyReportController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $daily_details = DailyDetail::join('daily_reports', 'daily_details.daily_report_id' , '=', 'daily_reports.id')
-        ->select('daily_reports.id', 'daily_reports.line_name', 'daily_reports.worked_on', 'daily_details.item_id', 'daily_details.workers_number', 'daily_details.started_on', 'daily_details.pass_amount', 'daily_details.state')
+        // $daily_details = DailyDetail::join('daily_reports', 'daily_details.daily_report_id' , '=', 'daily_reports.id')
+        // ->select('daily_reports.id', 'daily_reports.line_name', 'daily_reports.worked_on', 'daily_details.item_id', 'daily_details.workers_number', 'daily_details.started_on', 'daily_details.pass_amount', 'daily_details.state')
+        // ->get();
+        // 同じテーブルのデータを返すので上の書き方はNG--DailyDetail::join
+
+        $from_worked_on = $request->from_worked_on;
+        $to_worked_on = $request->to_worked_on;
+        $line_name = $request->line_name;
+        $item_id = $request->item_id;
+
+        $query = DailyReport::query();
+        
+        $daily_reports = $query
+        // select('daily_reports.*')がないとidカラムが重複してエラーになる
+        ->select('daily_reports.*')
+        ->join('daily_details', 'daily_reports.id', '=', 'daily_details.daily_report_id')
+        ->where('daily_details.item_id', 'like', '%'.$item_id.'%')
+        ->where('line_name', 'like', '%'.$line_name.'%')
+        ->whereDate('worked_on' , '>=', $from_worked_on)
+        ->whereDate('worked_on' , '<=', $to_worked_on)
         ->get();
-        return $daily_details;
+        
+        return DailyReportForListResource::collection($daily_reports);
     }
 
     public function show($id)

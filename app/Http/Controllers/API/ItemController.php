@@ -135,7 +135,7 @@ class ItemController extends Controller
 
     public function searchItem(Request $request)
     {
-        $code = $request->code;
+
         $name = $request->name;
 
         $query = Item::query();
