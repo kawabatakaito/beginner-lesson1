@@ -35,12 +35,22 @@
                     <div class="card mt-3">
                         <div class="card-body">
                             <p>{{index + 1}}</p>
-                            <div class="row">
+                            <div class="row align-self-center">
                                 <div class="col-12 mt-2"></div>
-                                <div class="align-self-center ml-3 mr-1 font-bold">品番</div>
-                                <input type="text" v-model="daily_detail.item_id" class="align-self-center">：{{ items.name }}
-                                <div class="align-self-center ml-3 mr-1 font-bold">担当者</div>
-                                <input type="text" v-model="daily_detail.employee_id" class="align-self-center" readonly>：
+                                <div class="ml-3 mr-1 font-bold align-self-center">品番</div>
+                                <input type="text" v-model="name" class="align-self-center">
+                                <button type="button" class="btn btn-success align-self-center ml-1" @click="searchItems">検索</button>
+
+                                <div class="col-2 align-self-center">
+                                    <select id="item_id" class="form-control" v-model="daily_detail.item_id">
+                                            <option  v-for="item in items" :key="item.index" :value="item.id">{{item.name}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <div class="row align-self-center">
+                                <div class="ml-3 mr-1 font-bold">担当者</div>
+                                {{loginUserId}}：{{loginUserName}}
                                 <input type="hidden" v-model="daily_detail.employee_id">
                             </div>
                     
@@ -195,16 +205,19 @@ export default {
         return {
             message: '',
             login_user_name: '',
+            item_id: '',
             daily_report: {
                 id: '',
                 line_name: '',
                 worked_on: '',
                 daily_details: [],
             },
+            code: '',
+            name: '',
             items: {
-                id: 100,
-                code: '0304',
-                name: 'パソコン',
+                id: '',
+                name: '',
+                code: '',
             },
             employees: {
                 user_id: 38,
@@ -219,7 +232,7 @@ export default {
             default_daily_detail: {
                 id: '',
                 daily_report_id: '',
-                item_id: '038',
+                item_id: '',
                 employee_id: '',
                 is_oxygen_scavenger: false,
                 is_packaging_material: false,
@@ -255,8 +268,6 @@ export default {
         this.getUser()
         this.addFirstDailyDetail()
         this.getDailyReports()
-        this.getItem()
-        this.getEmployee()
         this.setToday()
         this.getDailyDetail()
     },
@@ -264,7 +275,20 @@ export default {
         //
     },
     computed: {
-        // 
+        loginUserName() {
+            var user = this.$store.state.user
+            if (!user.employee) {
+                return user.name
+            }
+            return user.employee.last_name + ' ' + user.employee.first_name
+        },
+        loginUserId() {
+            var user = this.$store.state.user
+            if (!user.employee) {
+                return 'IDなし'
+            }
+            return user.employee_id
+        },
     },
     methods: {
         getUser() {
@@ -278,12 +302,6 @@ export default {
         },
         getDailyReports() {
             this.daily_report
-        },
-        getItem() {
-            this.items
-        },
-        getEmployee() {
-            this.employees
         },
         setToday() {
             this.daily_report.worked_on = moment().format("YYYY-MM-DD")
@@ -324,6 +342,19 @@ export default {
         },
         onPlus(index) {
             this.daily_report.daily_details.splice(index + 1, 0, _.cloneDeep(this.default_daily_detail))
+        },
+        async searchItems() {
+            try {
+                const {data} = await axios.get('/api/item/search_item', {
+                    params: {
+                        code: this.code,
+                        name: this.name,
+                    }
+                })
+                this.items = data
+            } catch (e) {
+                console.log(error)
+            }  
         },
     },
 }

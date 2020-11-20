@@ -47,7 +47,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('item/{item}', 'API\ItemController@update');
     Route::delete('item/{item}', 'API\ItemController@destroy');
     Route::get('item/selector', 'API\ItemController@selector');
-
     Route::get('lesson/selector', 'API\LessonController@index');
     ////
 
@@ -64,6 +63,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('daily_report/create', 'API\DailyReportController@create');
     Route::post('daily_report/store', 'API\DailyReportController@store');
     Route::delete('daily_report/{daily_report_id}', 'API\DailyReportController@destroy');
+
+    // item
+    Route::get('item/search_item', 'API\ItemController@searchItem');
 
     // daily_details
     Route::get('daily_details', 'API\DailyDetailController@index');

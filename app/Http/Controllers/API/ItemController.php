@@ -132,4 +132,15 @@ class ItemController extends Controller
             ->get();
         return ItemSelectorResource::collection($items);
     }
+
+    public function searchItem(Request $request)
+    {
+        $code = $request->code;
+        $name = $request->name;
+
+        $query = Item::query();
+        
+        return $query->where('code', 'like', '%'.$name.'%')->get();
+    }
+
 }

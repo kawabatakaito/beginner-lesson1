@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\DailyReport;
 use App\DailyDetail;
+use App\Item;
 
 class DailyReportController extends Controller
 {
@@ -77,4 +78,6 @@ class DailyReportController extends Controller
             return $daily_report;
         });
     }
+
+
 }

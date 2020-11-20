@@ -39,8 +39,9 @@
                                 <div class="col-12 mt-2"></div>
                                 <div class="align-self-center ml-3 mr-1 font-bold">品番</div>
                                 <input type="text" v-model="daily_detail.item_id" class="align-self-center">：{{ items.name }}
-                                <div class="align-self-center ml-3 mr-1 font-bold">担当者</div>
-                                <input type="text" v-model="daily_detail.employee_id" class="align-self-center" readonly>：{{ employees.last_name }}
+                                <div class="align-self-center ml-3 mr-1 font-bold">担当者
+                                {{daily_detail.employee_id}}：{{ loginUser }}
+                                </div>
                             </div>
                     
                             <div class="row">
@@ -202,9 +203,9 @@ export default {
                 daily_details: [],
             },
             items: {
-                id: 100,
-                code: '0304',
-                name: 'パソコン',
+                id: '',
+                code: '',
+                name: '',
             },
             employees: {
                 user_id: 38,
@@ -242,6 +243,11 @@ export default {
                 state: '実行前',
                 is_finished: false,
             },
+            user: {
+                id: '',
+                name: '',
+                employee_id: '',
+            }
         }
     },
     mounted () {
@@ -254,7 +260,13 @@ export default {
         //
     },
     computed: {
-
+        loginUser() {
+            var user = this.$store.state.user
+            if (!user.employee) {
+                return user.name
+            }
+            return user.employee.last_name + ' ' + user.employee.first_name
+        },
     },
     methods: {
             // ↓　axios.create()なしでは＋ボタン反応しない--axios.create()を使うことでリクエストのインスタンスを作ることもできる。引数には設定を渡すことができる。
@@ -267,8 +279,7 @@ export default {
             }
         },
         getUser() {
-            var user = this.$store.state.user
-            this.default_daily_detail.employee_id = user.employee_id
+            this.default_daily_detail.employee_id =  this.$store.state.user.employee_id
         },
         onBack() {
             this.$router.push({ name: 'daily_report' })
