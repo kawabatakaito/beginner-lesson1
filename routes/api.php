@@ -66,6 +66,7 @@ Route::middleware(['auth:api'])->group(function () {
 
     // item
     Route::get('item/search_item', 'API\ItemController@searchItem');
+    Route::get('item/get_item_name', 'API\ItemController@getItemName');
 
     // daily_details
     Route::get('daily_details', 'API\DailyDetailController@index');

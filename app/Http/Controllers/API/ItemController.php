@@ -143,4 +143,14 @@ class ItemController extends Controller
         return $query->where('code', 'like', '%'.$name.'%')->get();
     }
 
+    public function getItemName(Request $request)
+    {
+
+        $id = $request->item_id;
+
+        $item = Item::find($id);
+        
+        return $item->name;
+    }
+
 }

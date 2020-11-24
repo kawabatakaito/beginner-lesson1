@@ -49,13 +49,12 @@
                             <th class="text-center bg-primary text-white">状態</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         <tr class="clickable" v-for="(daily_report, index) in daily_reports" :key="index" @click="onShow(daily_report.id)">
                             <td class="text-center align-middle">{{ daily_report.worked_on }}</td>
                             <td class="text-center align-middle">
                                 <div v-for="detail in daily_report.daily_details" :key="detail.id">
-                                    {{ detail.item_id }}
+                                    {{ detail.item_name }}
                                 </div>
                             </td>
                             <td class="text-center align-middle">{{ daily_report.line_name }}</td>
@@ -66,7 +65,7 @@
                             </td>
                             <td class="text-center align-middle">
                                 <div v-for="detail in daily_report.daily_details" :key="detail.id">
-                                    {{ detail.started_on }}
+                                    {{ detail.production_time }}
                                 </div>
                             </td>
                             <td class="text-center align-middle">
@@ -106,6 +105,9 @@ export default {
     },
     watch: {
         //
+    },
+    computed: {
+        // 
     },
     methods: {
         onBack() {

@@ -23,6 +23,7 @@
                             <option>2</option>
                             <option>3</option>
                             <option>4</option>
+                            <option>5</option>
                         </select>
                     </div>
                     <div class="align-self-center font-bold">号機</div>
@@ -37,20 +38,56 @@
                             <p>{{index + 1}}</p>
                             <div class="row align-self-center">
                                 <div class="col-12 mt-2"></div>
-                                <div class="ml-3 mr-1 font-bold align-self-center">品番</div>
-                                <input type="text" v-model="name" class="align-self-center">
-                                <button type="button" class="btn btn-success align-self-center ml-1" @click="searchItems">検索</button>
-
-                                <div class="col-2 align-self-center">
-                                    <select id="item_id" class="form-control" v-model="daily_detail.item_id">
-                                            <option  v-for="item in items" :key="item.index" :value="item.id">{{item.name}}</option>
-                                    </select>
+                                <div class="ml-3 mr-1 font-bold align-self-center">品番
+                                    <input type="text" v-model="daily_detail.item_code" class="align-self-center" data-toggle="modal" :data-target="'#modal1'+index" readonly>
+                                    <button type="button" class="btn btn-primary mr-2" data-toggle="modal" :data-target="'#modal1'+index">検索</button>商品名：{{daily_detail.item_name}}
                                 </div>
+                                <!-- ここからモーダルのポップアップ部分 -->
+                                <div class="modal fade" :id="'modal1'+index" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="label1">商品検索</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="text" v-model="name" class="align-self-center">
+                                                <button type="button" class="btn btn-success align-self-center ml-1" @click="searchItems">検索</button>
+                                                <table class="table table-sm mt-3" key="processes">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center bg-primary text-white">商品コード</th>
+                                                            <th class="text-center bg-primary text-white">商品名</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr class="clickable" v-for="item in items" :key="item.index" :value="item.id" @click="getItemId(daily_detail,item)">
+                                                            <td class="text-center align-middle" >{{ item.code }}</td>
+                                                            <td class="text-center align-middle">{{ item.name }}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                <div class="text-center align-middle">
+                                                    <strong>選択　code:　</strong>{{daily_detail.item_code}}<strong>　name:　</strong>{{daily_detail.item_name}}
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- ここまでモーダル -->
                             </div>
+
+                            <p><strong>item_id: </strong>{{daily_detail.item_id}}</p>
                             
-                            <div class="row align-self-center">
-                                <div class="ml-3 mr-1 font-bold">担当者</div>
-                                {{loginUserId}}：{{loginUserName}}
+                            <div class="row align-self-center mt-2">
+                                <div class="ml-3 mr-1 font-bold">担当者
+                                    {{loginUserId}}：{{loginUserName}}
+                                </div>
                                 <input type="hidden" v-model="daily_detail.employee_id">
                             </div>
                     
@@ -214,15 +251,7 @@ export default {
             },
             code: '',
             name: '',
-            items: {
-                id: '',
-                name: '',
-                code: '',
-            },
-            employees: {
-                user_id: 38,
-                last_name: '川畑',
-            },
+            items: [],
             default_daily_report: {
                 id:'',
                 line_name:'',
@@ -244,8 +273,8 @@ export default {
                 start_x_detector_sus_check: false,
                 start_x_detector_gi_check: false,
                 start_x_detector_pvc_check: false,
-                started_on: '00:00',
-                finished_on: '00:00',
+                started_on: '',
+                finished_on: '',
                 pass_amount: '',
                 repack_amount: '',
                 lightweight: '',
@@ -260,6 +289,8 @@ export default {
                 stop_x_detector_pvc_check: false,
                 state: '実行前',
                 is_finished: false,
+                item_name: '',
+                item_code: '',
             },
             user_name: '',
         }
@@ -318,6 +349,9 @@ export default {
             return daily_detail.finished_on = moment().format("HH:mm")
         },
         onCreate(status) {
+            var line_name_exist = true
+            var item_name_exist = true
+
             if (status == 'state') {
                 if (!confirm('このデータを一時保存しますか？')) {
                     return
@@ -329,16 +363,33 @@ export default {
                 }
                 this.message = 'データを登録しました'
             }
+
+            if (!this.daily_report.line_name) {
+                line_name_exist = false
+            }
+
             this.daily_report.daily_details.forEach(daily_detail => {
                 daily_detail.employee_id = this.$store.state.user.employee_id
+                if (!daily_detail.item_id) {
+                    item_name_exist = false
+                }
             }) 
-            axios.post('/api/daily_report/store', {
-                daily_report: this.daily_report,
-            })
-            .then(alert(this.message),this.$router.push({ name: 'daily_report' }))
-            .catch(error => {
-                console.log(error);
-            });
+
+            if (line_name_exist && item_name_exist) {
+                axios.post('/api/daily_report/store', {
+                    daily_report: this.daily_report,
+                })
+                .then(alert(this.message),this.$router.push({ name: 'daily_report' }))
+                .catch(error => {
+                    console.log(error);
+                });
+            } else if (!line_name_exist && !item_name_exist) {
+                alert('ラインと商品名を入力してください')
+            } else if (line_name_exist) {
+                alert('商品名を入力してください')
+            } else {
+                alert('ラインを入力してください')
+            }
         },
         onPlus(index) {
             this.daily_report.daily_details.splice(index + 1, 0, _.cloneDeep(this.default_daily_detail))
@@ -355,6 +406,11 @@ export default {
             } catch (e) {
                 console.log(error)
             }  
+        },
+        getItemId(daily_detail, item) {
+            daily_detail.item_id = item.id
+            daily_detail.item_name = item.name
+            daily_detail.item_code = item.code
         },
     },
 }
