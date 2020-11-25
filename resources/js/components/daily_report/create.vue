@@ -53,7 +53,8 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="text" v-model="name" class="align-self-center">
+                                                <div class="col-7 mb-3">コード：<input type="text" v-model="search_item_code" class="align-self-center"></div>
+                                                <div class="col-7 mb-3">商品名：<input type="text" v-model="search_item_name" class="align-self-center"></div>
                                                 <button type="button" class="btn btn-success align-self-center ml-1" @click="searchItems">検索</button>
                                                 <table class="table table-sm mt-3" key="processes">
                                                     <thead>
@@ -69,9 +70,10 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                                <div class="text-center align-middle">
-                                                    <strong>選択　code:　</strong>{{daily_detail.item_code}}<strong>　name:　</strong>{{daily_detail.item_name}}
-                                                </div>
+                                                    <div class="text-center align-middle">
+                                                        <strong>選択　コード：　</strong>{{daily_detail.item_code}}
+                                                        <strong>　商品名：　</strong>{{daily_detail.item_name}}
+                                                    </div>
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
@@ -215,6 +217,9 @@
                                 <div class="align-self-center ml-3">
                                     <button type="button" class="btn btn-primary btn-sm" @click="onPlus(index)">＋</button>
                                 </div>
+                                <div class="align-self-center ml-3">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" v-if="index>=1" @click="onMinus(index)">－</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -249,8 +254,8 @@ export default {
                 worked_on: '',
                 daily_details: [],
             },
-            code: '',
-            name: '',
+            search_item_code: '',
+            search_item_name: '',
             items: [],
             default_daily_report: {
                 id:'',
@@ -370,6 +375,8 @@ export default {
 
             this.daily_report.daily_details.forEach(daily_detail => {
                 daily_detail.employee_id = this.$store.state.user.employee_id
+                this.$delete(daily_detail, 'item_name')
+                this.$delete(daily_detail, 'item_code')
                 if (!daily_detail.item_id) {
                     item_name_exist = false
                 }
@@ -394,12 +401,15 @@ export default {
         onPlus(index) {
             this.daily_report.daily_details.splice(index + 1, 0, _.cloneDeep(this.default_daily_detail))
         },
+        onMinus(index) {
+            this.daily_report.daily_details.splice(index, 1)
+        },
         async searchItems() {
             try {
                 const {data} = await axios.get('/api/item/search_item', {
                     params: {
-                        code: this.code,
-                        name: this.name,
+                        code: this.search_item_code,
+                        name: this.search_item_name,
                     }
                 })
                 this.items = data

@@ -70,5 +70,6 @@ Route::middleware(['auth:api'])->group(function () {
 
     // daily_details
     Route::get('daily_details', 'API\DailyDetailController@index');
+    Route::delete('daily_detail/{daily_detail_id}', 'API\DailyDetailController@destroy');
 
 });

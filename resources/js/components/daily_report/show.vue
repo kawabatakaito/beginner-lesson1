@@ -23,6 +23,7 @@
                             <option>2</option>
                             <option>3</option>
                             <option>4</option>
+                            <option>5</option>
                         </select>
                     </div>
                     <div class="align-self-center font-bold">号機</div>
@@ -52,7 +53,8 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                                <input type="text" v-model="name" class="align-self-center">
+                                                <div class="col-7 mb-3">コード：<input type="text" v-model="search_item_code" class="align-self-center"></div>
+                                                <div class="col-7 mb-3">商品名：<input type="text" v-model="search_item_name" class="align-self-center"></div>
                                                 <button type="button" class="btn btn-success align-self-center ml-1" @click="searchItems">検索</button>
                                                 <table class="table table-sm mt-3" key="processes">
                                                     <thead>
@@ -69,7 +71,8 @@
                                                     </tbody>
                                                 </table>
                                                 <div class="text-center align-middle">
-                                                    <strong>選択　code:　</strong>{{daily_detail.item_code}}<strong>　name:　</strong>{{daily_detail.item_name}}
+                                                    <strong>選択　コード：　</strong>{{daily_detail.item_code}}
+                                                    <strong>　商品名：　</strong>{{daily_detail.item_name}}
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -213,6 +216,9 @@
                                 <div class="align-self-center ml-3">
                                     <button type="button" class="btn btn-primary btn-sm" @click="onPlus(index)">＋</button>
                                 </div>
+                                <div class="align-self-center ml-3">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" v-if="index>=1" @click="onMinus(index, daily_detail.id)">－</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -241,6 +247,8 @@ export default {
     data() {
         return {
             message: '',
+            search_item_name: '',
+            search_item_code: '',
             item_name: '',
             daily_report: {
                 id: '',
@@ -252,10 +260,6 @@ export default {
                 id: '',
                 code: '',
                 name: '',
-            },
-            employees: {
-                user_id: 38,
-                last_name: '川畑',
             },
             default_daily_detail: {
                 id: '',
@@ -349,6 +353,24 @@ export default {
         onPlus(index) {
             this.daily_report.daily_details.splice(index + 1, 0, _.cloneDeep(this.default_daily_detail))
         },
+        onMinus(index, daily_detail_id) {
+            if (!daily_detail_id) {
+                this.daily_report.daily_details.splice(index, 1)
+                return
+            }
+            if (!confirm('このページの'+(index+1)+'番目のデータを削除しますか？')) {
+                return
+            }
+            axios.post('/api/daily_detail/'+daily_detail_id, { _method: 'delete' })
+            .then(alert('データを削除しました・・・'),this.$router.push({
+                name: 'daily_report.show',
+                params: { daily_report_id: this.daily_report_id }},
+                () => {}),
+                this.daily_report.daily_details.splice(index, 1))
+            .catch(function (error) {daily_repo
+                console.log(error);
+            })
+        },
         onDelete() {
             if (!confirm('このデータを削除しますか？')) {
                 return
@@ -380,6 +402,8 @@ export default {
             }
 
             this.daily_report.daily_details.forEach(daily_detail => {
+                this.$delete(daily_detail, 'item_name')
+                this.$delete(daily_detail, 'item_code')
                 if (!daily_detail.item_id) {
                     item_name_exist = false
                 }
@@ -416,8 +440,8 @@ export default {
             try {
                 const {data} = await axios.get('/api/item/search_item', {
                     params: {
-                        code: this.code,
-                        name: this.name,
+                        code: this.search_item_code,
+                        name: this.search_item_name,
                     }
                 })
                 this.items = data

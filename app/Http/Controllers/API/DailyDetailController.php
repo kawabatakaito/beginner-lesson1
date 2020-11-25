@@ -14,4 +14,11 @@ class DailyDetailController extends Controller
         return DailyDetail::all();
     }
 
+    public function destroy($id)
+    {
+        $daily_detail = DailyDetail::find($id);
+        $daily_detail->delete();
+        return;
+    }
+
 }

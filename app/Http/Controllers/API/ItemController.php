@@ -137,10 +137,17 @@ class ItemController extends Controller
     {
 
         $name = $request->name;
+        $code = $request->code;
 
         $query = Item::query();
-        
-        return $query->where('code', 'like', '%'.$name.'%')->get();
+
+        if (!$name && $code) {
+            return $query->where('code', 'like', '%'.$code.'%')->get();
+        } else if (!$code && $name) {
+            return $query->where('name', 'like', '%'.$name.'%')->get();
+        } else {
+            return $query->where('name', 'like', '%'.$name.'%')->Where('code', 'like', '%'.$code.'%')->get();
+        }
     }
 
     public function getItemName(Request $request)
