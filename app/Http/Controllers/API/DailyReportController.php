@@ -16,26 +16,36 @@ class DailyReportController extends Controller
 {
     public function index(Request $request)
     {
+        $item_id = $request->item_id;
+        $line_name = $request->line_name;
         $from_worked_on = $request->from_worked_on;
         $to_worked_on = $request->to_worked_on;
-        $line_name = $request->line_name;
-        $item_id = $request->item_id;
 
         $daily_reports = DailyReport::join('daily_details', 'daily_reports.id', '=', 'daily_details.daily_report_id')
-        ->where('daily_details.item_id', 'like', '%'.$item_id.'%')
-        ->where('line_name', 'like', '%'.$line_name.'%')
-        ->whereDate('worked_on' , '>=', $from_worked_on)
-        ->whereDate('worked_on' , '<=', $to_worked_on)
+        ->when($item_id, function ($query) use ($item_id) {
+            return $qurery->where('daily_details.item_id', 'like', '%'.$item_id.'%');
+        })
+        ->when($line_name, function ($query) use ($line_name) {
+            return $query->where('line_name', 'like', '%'.$line_name.'%');
+        })
+        ->when($from_worked_on, function ($query) use ($from_worked_on) {
+            return $query->whereDate('worked_on' , '>=', $from_worked_on);
+        })
+        ->when($to_worked_on, function ($query) use ($to_worked_on) {
+            return $query->whereDate('worked_on' , '<=', $to_worked_on);
+        })
         ->groupBy('daily_details.daily_report_id')
         ->select('daily_reports.*')
         ->get();
-
+        
         foreach ($daily_reports as $daily_report) {
             foreach ($daily_report->daily_details as $daily_detail) {
-                // item_nameを取得してdaily_detail->item_nameに代入
+                $daily_detail->line_name = $daily_report->line_name;
+                $daily_detail->worked_on = $daily_report->worked_on;
+                // item_nameを取得
                 $item = Item::find($daily_detail->item_id);
                 $daily_detail->item_name = $item->name;
-                //  作業時間を計算してdaily_detail->production_timeに代入
+                //  作業時間を計算
                 if($daily_detail->started_on && $daily_detail->finished_on){
                     $daily_detail->production_time = gmdate("H:i", (strtotime($daily_detail->finished_on) - strtotime($daily_detail->started_on)));
                 } else {
@@ -43,7 +53,6 @@ class DailyReportController extends Controller
                 }
             }
         }
-        
         return DailyReportForListResource::collection($daily_reports);
     }
 
@@ -51,7 +60,7 @@ class DailyReportController extends Controller
     {
         $daily_report = DailyReport::with('daily_details')->find($id);
         foreach ($daily_report->daily_details as $daily_detail) {
-            // item_nameを取得してdaily_detail->item_nameに代入
+            // item_nameを取得
             $item = Item::find($daily_detail->item_id);
             $daily_detail->item_name = $item->name;
             $daily_detail->item_code = $item->code;  

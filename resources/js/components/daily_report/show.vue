@@ -13,8 +13,7 @@
                         <button type="button" class="btn btn-dark" @click="onBack">戻る</button>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-12 mt-4"></div>
+                <div class="row mt-4">
                     <div class="align-self-center font-bold ml-3">ライン</div>
                     <div class="align-self-center">
                         <select id="line_name" class="form-control" v-model="daily_report.line_name">
@@ -52,7 +51,7 @@
                                                 <span aria-hidden="true">&times;</span>
                                                 </button>
                                             </div>
-                                            <div class="modal-body">
+                                            <div class="modal-body text-center">
                                                 <div class="col-7 mb-3">コード：<input type="text" v-model="search_item_code" class="align-self-center"></div>
                                                 <div class="col-7 mb-3">商品名：<input type="text" v-model="search_item_name" class="align-self-center"></div>
                                                 <button type="button" class="btn btn-success align-self-center ml-1" @click="searchItems">検索</button>
@@ -84,16 +83,13 @@
                                 <!-- ここまでモーダル -->
                             </div>
 
-                            <p><strong>item_id: </strong>{{daily_detail.item_id}}</p>
-
                             <div class="row mt-2">
                                 <div class="align-self-center ml-3 mr-1 font-bold">担当者
                                 {{daily_detail.employee_id}}：{{ loginUser }}
                                 </div>
                             </div>
                     
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3">
                                 <div class="form-check align-self-center ml-3">
                                     <input class="form-check-input" type="checkbox" :id="'check1a-'+index+1" v-model="daily_detail.is_oxygen_scavenger">
                                     <label class="form-check-label font-bold" :for="'check1a-'+index+1">脱酸素剤</label>
@@ -106,12 +102,14 @@
                                     <input class="form-check-input" type="checkbox" :id="'check1c-'+index+1" v-model="daily_detail.is_filling_gas">
                                     <label class="form-check-label font-bold" :for="'check1c-'+index+1">充填ガス</label>
                                 </div>
-                                <div class="align-self-center mx-3 font-bold">作業員数</div>
-                                <input type="number" v-model.number="daily_detail.workers_number" class="col-2 align-self-center">
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3">
+                                <div class="align-self-center mx-3 font-bold">作業員数</div>
+                                <input type="text" v-model="daily_detail.workers_number" class="align-self-center col-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('workers_number')" readonly>
+                            </div>
+
+                            <div class="row mt-3">
                                 <div class="col-12 font-bold">金属検出機動作確認</div>
                                 <div class="form-check align-self-center ml-3">
                                     <input class="form-check-input" type="checkbox" :id="'check1a-'+index+1" v-model="daily_detail.start_metal_detector_fe_check">
@@ -123,8 +121,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3">
                                 <div class="col-12 font-bold">X線異物検出機動作確認</div>
                                 <div class="form-check align-self-center ml-3">
                                     <input class="form-check-input" type="checkbox" :id="'check1a-'+index+1" v-model="daily_detail.start_x_detector_fe_check">
@@ -144,41 +141,42 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3">
                                 <button type="button" class="btn btn-success btn-lg col-8 ml-3" @click="onStart(daily_detail)">作業開始</button>
                                 <div class="ml-3 align-self-center time-font">{{ startedTime(daily_detail.started_on) }}</div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
-                                <div class="align-self-center mx-3 font-bold">良品数</div>
-                                <input type="number" v-model.number="daily_detail.pass_amount" class="col-2 align-self-center">
-                                <div class="align-self-center mx-3 font-bold">リパック数</div>
-                                <input type="number" v-model.number="daily_detail.repack_amount" class="col-2 align-self-center">
+                            <div class="row mt-3 font-bold">
+                                <div class="col-sm-12 col-md-5 mt-3">
+                                    良品数<input type="text" class="ml-2" v-model="daily_detail.pass_amount" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('pass_amount')" readonly>
+                                </div>
+                                <div class="col-sm-12 col-md-5 mt-3">
+                                    リパック数<input type="text" class="ml-2" v-model="daily_detail.repack_amount" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('repack_amount')" readonly>
+                                </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3 font-bold">
                                 <div class="col-12 font-bold">不良品数</div>
-                                <div class="align-self-center mx-3 font-bold">軽量</div>
-                                <input type="number" v-model.number="daily_detail.lightweight" class="col-1 align-self-center">
-                                <div class="align-self-center mx-3 font-bold">外観等</div>
-                                <input type="number" v-model.number="daily_detail.appearance" class="col-1 align-self-center">
-                                <div class="align-self-center mx-3 font-bold">金属排除</div>
-                                <input type="number" v-model.number="daily_detail.metal_removal" class="col-1 align-self-center">
-                                <div class="align-self-center mx-3 font-bold">X線排除</div>
-                                <input type="number" v-model.number="daily_detail.x_removal" class="col-1 align-self-center">
+                                <div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+                                    軽量<input type="text" v-model="daily_detail.lightweight" class="ml-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('lightweight')" readonly>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+                                    外観等<input type="text" v-model="daily_detail.appearance" class="ml-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('appearance')" readonly>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+                                    金属排除<input type="text" v-model="daily_detail.metal_removal" class="ml-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('metal_removal')" readonly>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+                                    X線排除<input type="text" v-model="daily_detail.x_removal" class="ml-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('x_removal')" readonly>
+                                </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3">
                                 <button type="button" class="btn btn-danger btn-lg col-8 ml-3" @click="onFinish(daily_detail)">作業終了</button>
                                 <div class="ml-3 align-self-center time-font">{{ finishedTime(daily_detail.finished_on) }}</div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3">
                                 <div class="col-12 font-bold">金属検出機動作確認</div>
                                 <div class="form-check align-self-center ml-3">
                                     <input class="form-check-input" type="checkbox" :id="'check1a-'+index+1" v-model="daily_detail.stop_metal_detector_fe_check">
@@ -190,8 +188,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3">
                                 <div class="col-12 font-bold">X線異物検出機動作確認</div>
                                 <div class="form-check align-self-center ml-3">
                                     <input class="form-check-input" type="checkbox" :id="'check1a-'+index+1" v-model="daily_detail.stop_x_detector_fe_check">
@@ -211,8 +208,7 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 mt-3"></div>
+                            <div class="row mt-3">
                                 <div class="align-self-center ml-3">
                                     <button type="button" class="btn btn-primary btn-sm" @click="onPlus(index)">＋</button>
                                 </div>
@@ -220,13 +216,53 @@
                                     <button type="button" class="btn btn-sm btn-outline-danger" v-if="index>=1" @click="onMinus(index, daily_detail.id)">－</button>
                                 </div>
                             </div>
+
+                            <!-- ここからテンキーのモーダル部分 -->
+                            <div class="modal fade" :id="'tenkey'+index" tabindex="-1" role="dialog" aria-labelledby="tenkey-label" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="tenkey-label">入力</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <input type="text" v-model="number" class="mb-3" readonly>
+                                            <div class="col-12">
+                                                <button class="px-3 py-2" @click="number += 1 ">1</button>
+                                                <button class="px-3 py-2" @click="number += 2 ">2</button>
+                                                <button class="px-3 py-2" @click="number += 3 ">3</button>
+                                            </div>
+                                            <div class="col-12 mt-1">
+                                                <button class="px-3 py-2" @click="number += 4 ">4</button>
+                                                <button class="px-3 py-2" @click="number += 5 ">5</button>
+                                                <button class="px-3 py-2" @click="number += 6 ">6</button>
+                                            </div>
+                                            <div class="col-12 mt-1">
+                                                <button class="px-3 py-2" @click="number += 7 ">7</button>
+                                                <button class="px-3 py-2" @click="number += 8 ">8</button>
+                                                <button class="px-3 py-2" @click="number += 9 ">9</button>
+                                            </div>
+                                            <div class="col-12 mt-1">
+                                                <button class="px-3 py-2" @click="number += '.' "> .</button>
+                                                <button class="px-3 py-2" @click="number += 0 ">0</button>
+                                                <button class="px-3 py-2" @click="number = '' ">C</button>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" @click="setNumber(number, daily_detail)">OK</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- ここまでモーダル -->
                         </div>
                     </div>
                 </div>
             <!-- ここまでv-forで追加 -->
 
-                <div class="row justify-content-between">
-                    <div class="col-12 mt-4"></div>
+                <div class="row justify-content-between mt-4">
                     <button type="button" class="btn btn-outline-danger ml-1" @click="onDelete">この日報を削除する</button>
                     <button type="button" class="btn btn-primary mr-3" @click="onUpdate('finished')" style="width: 150px;">更新する</button>
                 </div>
@@ -250,6 +286,8 @@ export default {
             search_item_name: '',
             search_item_code: '',
             item_name: '',
+            number: "",
+            change_column: '',
             daily_report: {
                 id: '',
                 line_name: '',
@@ -299,12 +337,12 @@ export default {
                 id: '',
                 name: '',
                 employee_id: '',
-            }
+            },
         }
     },
     mounted () {
-        this.getUser()
         this.getDailyReport()
+        this.setUserId()
         this.getItem()
         this.getEmployee()
     },
@@ -330,7 +368,7 @@ export default {
                 console.log(error)
             }
         },
-        getUser() {
+        setUserId() {
             this.default_daily_detail.employee_id =  this.$store.state.user.employee_id
         },
         onBack() {
@@ -362,12 +400,9 @@ export default {
                 return
             }
             axios.post('/api/daily_detail/'+daily_detail_id, { _method: 'delete' })
-            .then(alert('データを削除しました・・・'),this.$router.push({
-                name: 'daily_report.show',
-                params: { daily_report_id: this.daily_report_id }},
-                () => {}),
-                this.daily_report.daily_details.splice(index, 1))
-            .catch(function (error) {daily_repo
+            .then(alert('データを削除しました・・・'),this.$router.push({name: 'daily_report.show',
+            params: { daily_report_id: this.daily_report_id }},() => {}),this.daily_report.daily_details.splice(index, 1))
+            .catch(function (error) {
                 console.log(error);
             })
         },
@@ -453,6 +488,28 @@ export default {
             daily_detail.item_id = item.id
             daily_detail.item_name = item.name
             daily_detail.item_code = item.code
+        },
+        setNumber(number, daily_detail) {
+            if (this.change_column == 'workers_number') {
+                daily_detail.workers_number = number
+            } else if (this.change_column == 'pass_amount') {
+                daily_detail.pass_amount = number
+            } else if (this.change_column == 'repack_amount') {
+                daily_detail.repack_amount = number
+            } else if (this.change_column == 'lightweight') {
+                daily_detail.lightweight = number
+            } else if (this.change_column == 'appearance') {
+                daily_detail.appearance = number
+            } else if (this.change_column == 'metal_removal') {
+                daily_detail.metal_removal = number
+            } else if (this.change_column == 'x_removal') {
+                daily_detail.x_removal = number
+            }
+            this.change_column = ''
+            this.number = ''
+        },
+        setChangeColumn(column){
+            this.change_column = column
         },
     },
 }
