@@ -23,7 +23,7 @@ class DailyReportController extends Controller
 
         $daily_reports = DailyReport::join('daily_details', 'daily_reports.id', '=', 'daily_details.daily_report_id')
         ->when($item_id, function ($query) use ($item_id) {
-            return $qurery->where('daily_details.item_id', 'like', '%'.$item_id.'%');
+            return $query->where('daily_details.item_id', '=', $item_id);
         })
         ->when($line_name, function ($query) use ($line_name) {
             return $query->where('line_name', 'like', '%'.$line_name.'%');
@@ -44,9 +44,13 @@ class DailyReportController extends Controller
                 $daily_detail->worked_on = $daily_report->worked_on;
                 // item_nameを取得
                 $item = Item::find($daily_detail->item_id);
-                $daily_detail->item_name = $item->name;
+                if ($item) {
+                    $daily_detail->item_name = $item->name;
+                } else {
+                    $daily_detail->item_name = 'NoData(item_id:'.$daily_detail->item_id.')';
+                }
                 //  作業時間を計算
-                if($daily_detail->started_on && $daily_detail->finished_on){
+                if ($daily_detail->started_on && $daily_detail->finished_on) {
                     $daily_detail->production_time = gmdate("H:i", (strtotime($daily_detail->finished_on) - strtotime($daily_detail->started_on)));
                 } else {
                     $daily_detail->production_time = '-';
@@ -62,8 +66,13 @@ class DailyReportController extends Controller
         foreach ($daily_report->daily_details as $daily_detail) {
             // item_nameを取得
             $item = Item::find($daily_detail->item_id);
-            $daily_detail->item_name = $item->name;
-            $daily_detail->item_code = $item->code;  
+            if ($item) {
+                $daily_detail->item_name = $item->name;
+                $daily_detail->item_code = $item->code;
+            } else {
+                $daily_detail->item_name = 'deleted item(item_id:'.$daily_detail->item_id.')';
+                $daily_detail->item_code = 'deleted item(item_id:'.$daily_detail->item_id.')';
+            }
         }
         return $daily_report;
     }
@@ -116,6 +125,37 @@ class DailyReportController extends Controller
             }
             return $daily_report;
         });
+    }
+
+    public function download(Request $request)
+    {
+        $report = $request->report;
+
+        echo '包装ライン日報';
+        echo "\n"."\n";
+        echo 'ライン'."\t".$report['line_name']."\t".'号機';
+        echo "\n";
+        echo '作業日'."\t".$report['worked_on'];
+        echo "\n"."\n"."\n";
+
+        foreach($report['daily_details'] as $detail) {
+            echo '品番'."\t".$detail['item_id']."\t"."\t".'担当者'."\t".$detail['employee_id'];
+            echo "\n"."\n";
+
+            echo '脱酸素剤'."\t".$detail['is_oxygen_scavenger'];
+            echo "\n";
+            echo '包装材料'."\t".$detail['is_packaging_material'];
+            echo "\n";
+            echo '充填ガス'."\t".$detail['is_filling_gas'];
+            echo "\n";
+            echo '作業員数'."\t".$detail['workers_number'];
+            echo "\n";
+
+            echo "\n"."\n";
+        }
+
+        return;
+
     }
 
 

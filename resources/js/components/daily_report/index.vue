@@ -18,10 +18,10 @@
                         作業日
                         <div class="align-self-center">
                             <input type="date" class="mr-1" v-model="from_worked_on">
-                            <button type="button" class="btn btn-dark btn-sm" @click="onResetFromWorkedOn">×</button>
+                            <button type="button" class="btn btn-dark btn-sm" @click="resetFromWorkedOn">×</button>
                             ～
                             <input type="date" class="ml-1" v-model="to_worked_on">
-                            <button type="button" class="btn btn-dark btn-sm" @click="onResetToWorkedOn">×</button>
+                            <button type="button" class="btn btn-dark btn-sm" @click="resetToWorkedOn">×</button>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-auto mt-3">ライン
@@ -40,6 +40,7 @@
                         <div class="ml-3 mr-1 align-self-center">品番
                             <input type="text" v-model="set_search_item_code" data-toggle="modal" data-target="#search-item" readonly>
                             <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#search-item">商品検索</button>
+                            <button type="button" class="btn btn-dark btn-sm" @click="resetSearchItemName">×</button>
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-2 mt-3">日報検索
@@ -48,20 +49,21 @@
                         </div>
                     </div>
                 </div>
-                <!-- ここからモーダルのポップアップ部分 -->
-                <div class="modal fade" id="search-item" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">
+                <!-- ここから商品検索のモーダル部分 -->
+                <div class="modal fade" id="search-item" tabindex="-1" role="dialog" aria-labelledby="search-item-label" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="label1">商品検索</h5>
+                                <h5 class="modal-title" id="search-item-label">商品検索</h5>
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body text-center">
                                 <div class="col-7 mb-3">コード：<input type="text" v-model="search_item_code" class="align-self-center"></div>
                                 <div class="col-7 mb-3">商品名：<input type="text" v-model="search_item_name" class="align-self-center"></div>
-                                <button type="button" class="btn btn-success align-self-center ml-1" @click="searchItems">検索</button>
+                                <button type="button" class="btn btn-dark btn-sm" @click="resetSearchItemName">×</button>
+                                <button type="button" class="btn btn-success align-self-center ml-3" @click="searchItems">検索</button>
                                 <table class="table table-sm mt-3" key="processes">
                                     <thead>
                                         <tr>
@@ -103,7 +105,7 @@
                     </thead>
 
                     <tbody v-for="(daily_report, index) in daily_reports" :key="index">
-                        <tr class="clickable" v-for="detail in daily_report.daily_details" :key="detail.id" @click="onShow(detail.daily_report_id)">
+                        <tr v-for="detail in daily_report.daily_details" :key="detail.id" :class="['clickable', {'bg-warning' : detail.state === '完了'}]" @click="onShow(detail.daily_report_id)">
                             <td class="text-center align-middle">{{ detail.worked_on }}</td>
                             <td class="text-center align-middle">{{ detail.item_name }} </td>
                             <td class="text-center align-middle">{{ detail.line_name }}</td>
@@ -198,12 +200,18 @@ export default {
             this.set_search_item_code = item.code
             this.set_search_item_name = item.name
             this.set_search_item_id = item.id
+            this.items = ''
         },
-        onResetFromWorkedOn() {
+        resetFromWorkedOn() {
             this.from_worked_on = ''
         },
-        onResetToWorkedOn() {
+        resetToWorkedOn() {
             this.to_worked_on = ''
+        },
+        resetSearchItemName() {
+            this.set_search_item_code = ''
+            this.set_search_item_name = ''
+            this.set_search_item_id = ''
         },
     },
 }

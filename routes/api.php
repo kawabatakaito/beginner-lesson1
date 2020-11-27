@@ -63,6 +63,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('daily_report/create', 'API\DailyReportController@create');
     Route::post('daily_report/store', 'API\DailyReportController@store');
     Route::delete('daily_report/{daily_report_id}', 'API\DailyReportController@destroy');
+    Route::post('daily_report/download', 'API\DailyReportController@download');
 
     // item
     Route::get('item/search_item', 'API\ItemController@searchItem');

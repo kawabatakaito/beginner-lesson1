@@ -7,7 +7,7 @@
                         <span class="span-header font-bold">包装ライン日報</span>
                     </div>
                     <div class="align-self-center mr-5">
-                        <button type="button" class="btn btn-success">ダウンロード</button>
+                        <button type="button" class="btn btn-success" @click="onDownload">ダウンロード</button>
                     </div>
                     <div class="align-self-center">
                         <button type="button" class="btn btn-dark" @click="onBack">戻る</button>
@@ -41,12 +41,12 @@
                                     <input type="text" v-model="daily_detail.item_code" class="align-self-center" data-toggle="modal" :data-target="'#modal1'+index" readonly>
                                     <button type="button" class="btn btn-primary mr-2" data-toggle="modal" :data-target="'#modal1'+index">検索</button>商品名：{{daily_detail.item_name}}
                                 </div>
-                                <!-- ここからモーダルのポップアップ部分 -->
-                                <div class="modal fade" :id="'modal1'+index" tabindex="-1" role="dialog" aria-labelledby="label1" aria-hidden="true">
+                                <!-- ここからモーダル部分 -->
+                                <div class="modal fade" :id="'modal1'+index" tabindex="-1" role="dialog" aria-labelledby="search-item-label" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="label1">商品検索</h5>
+                                                <h5 class="modal-title" id="search-item-label">商品検索</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                                 </button>
@@ -142,8 +142,9 @@
                             </div>
 
                             <div class="row mt-3">
-                                <button type="button" class="btn btn-success btn-lg col-8 ml-3" @click="onStart(daily_detail)">作業開始</button>
-                                <div class="ml-3 align-self-center time-font">{{ startedTime(daily_detail.started_on) }}</div>
+                                <button type="button" :class="['btn col-8 ml-3 py-3', daily_detail.state === '実行前' ? 'btn-success' :'btn-outline-success']"
+                                :disabled="daily_detail.state !== '実行前'" @click="onStart(daily_detail)">作業開始</button>
+                                <div class="ml-3 align-self-center time-font">{{ finishedTime(daily_detail.started_on) }}</div>
                             </div>
 
                             <div class="row mt-3 font-bold">
@@ -155,24 +156,25 @@
                                 </div>
                             </div>
 
-                            <div class="row mt-3 font-bold">
-                                <div class="col-12 font-bold">不良品数</div>
-                                <div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+                            <div class="row mt-5 font-bold">
+                                <div class="col-12">不良品数</div>
+                                <div class="col-sm-12 col-md-6 col-lg-2 mt-1">
                                     軽量<input type="text" v-model="daily_detail.lightweight" class="ml-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('lightweight')" readonly>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+                                <div class="col-sm-12 col-md-6 col-lg-2 mt-1">
                                     外観等<input type="text" v-model="daily_detail.appearance" class="ml-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('appearance')" readonly>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+                                <div class="col-sm-12 col-md-6 col-lg-2 mt-1">
                                     金属排除<input type="text" v-model="daily_detail.metal_removal" class="ml-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('metal_removal')" readonly>
                                 </div>
-                                <div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+                                <div class="col-sm-12 col-md-6 col-lg-2 mt-1">
                                     X線排除<input type="text" v-model="daily_detail.x_removal" class="ml-2" data-toggle="modal" :data-target="'#tenkey'+index" @click="setChangeColumn('x_removal')" readonly>
                                 </div>
                             </div>
 
                             <div class="row mt-3">
-                                <button type="button" class="btn btn-danger btn-lg col-8 ml-3" @click="onFinish(daily_detail)">作業終了</button>
+                                <button type="button" :class="['btn col-8 ml-3 py-3', daily_detail.state === '実行中' ? 'btn-danger' : 'btn-outline-danger']"
+                                :disabled="daily_detail.state !== '実行中'" @click="onFinish(daily_detail)">作業終了</button>
                                 <div class="ml-3 align-self-center time-font">{{ finishedTime(daily_detail.finished_on) }}</div>
                             </div>
 
@@ -286,7 +288,7 @@ export default {
             search_item_name: '',
             search_item_code: '',
             item_name: '',
-            number: "",
+            number: '',
             change_column: '',
             daily_report: {
                 id: '',
@@ -488,6 +490,7 @@ export default {
             daily_detail.item_id = item.id
             daily_detail.item_name = item.name
             daily_detail.item_code = item.code
+            this.items = ''
         },
         setNumber(number, daily_detail) {
             if (this.change_column == 'workers_number') {
@@ -511,6 +514,27 @@ export default {
         setChangeColumn(column){
             this.change_column = column
         },
+        onDownload() {
+            const _this=this
+            axios({
+                method:'post',
+                url:'/api/daily_report/download',
+                responseType:'blob',
+                dataType: 'binary',
+                data: {
+                    report: this.daily_report,
+                }
+            })
+            .then(function (res1) {
+                const url = window.URL.createObjectURL(new Blob([res1.data]))
+                const link = document.createElement('a')
+                link.href = url
+                let filename = moment().format('YYYY_MM_DD_hhmm')+'.xlsx'
+                link.setAttribute('download', '包装ライン日報' + filename)
+                document.body.appendChild(link)
+                link.click()
+            });
+        }
     },
 }
 </script>
